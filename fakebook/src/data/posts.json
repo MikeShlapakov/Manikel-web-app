@@ -1,12 +1,12 @@
 [
-    { "id": 1, "img": "image1.jpg", "title": "post1", "content":"some text", "comments": [], "likes": 0 },
-    { "id": 2, "img": "image2.jpg", "title": "post1", "content":"some text", "comments": [], "likes": 43 },
-    { "id": 3, "img": "image3.jpg", "title": "post1", "content":"some text", "comments": [], "likes": 21 },
-    { "id": 4, "img": "image4.jpg", "title": "post1", "content":"some text", "comments": [], "likes": 0 },
-    { "id": 5, "img": "image5.jpg", "title": "post1", "content":"some text", "comments": [], "likes": 0 },
-    { "id": 6, "img": "image6.jpg", "title": "post1", "content":"some text", "comments": [], "likes": 1 },
-    { "id": 7, "img": "image7.jpg", "title": "post1", "content":"some text", "comments": [], "likes": 0 },
-    { "id": 8, "img": "image8.jpg", "title": "post1", "content":"some text", "comments": [], "likes": 0 },    
-    { "id": 9, "img": "image9.jpg", "title": "post1", "content":"some text", "comments": [], "likes": 0 },
-    { "id": 10, "img": "image10.jpg", "title": "post1", "content":"some text", "comments": [], "likes": 0 }
+    { "id": 1, "img": "image1.jpg", "author":"mike", "date":"1/1/1", "title": "post1", "content":"some text", "comments": [], "likes": 0 },
+    { "id": 2, "img": "image2.jpg", "author":"mike", "date":"1/1/1", "title": "post1", "content":"some text", "comments": [], "likes": 43 },
+    { "id": 3, "img": "image3.jpg", "author":"mike", "date":"1/1/1", "title": "post1", "content":"some text", "comments": [], "likes": 21 },
+    { "id": 4, "img": "image4.jpg", "author":"mike", "date":"1/1/1", "title": "post1", "content":"some text", "comments": [], "likes": 0 },
+    { "id": 5, "img": "image5.jpg", "author":"mike", "date":"1/1/1", "title": "post1", "content":"some text", "comments": [], "likes": 0 },
+    { "id": 6, "img": "image6.jpg", "author":"mike", "date":"1/1/1", "title": "post1", "content":"some text", "comments": [], "likes": 1 },
+    { "id": 7, "img": "image7.jpg", "author":"mike", "date":"1/1/1", "title": "post1", "content":"some text", "comments": [], "likes": 0 },
+    { "id": 8, "img": "image8.jpg", "author":"mike", "date":"1/1/1", "title": "post1", "content":"some text", "comments": [], "likes": 0 },    
+    { "id": 9, "img": "image9.jpg", "author":"mike", "date":"1/1/1", "title": "post1", "content":"some text", "comments": [], "likes": 0 },
+    { "id": 10, "img": "image10.jpg", "author":"mike", "date":"1/1/1", "title": "post1", "content":"some text", "comments": [], "likes": 0 }
 ]

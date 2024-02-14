@@ -1,12 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
+import posts from '../data/posts.json'
 
 const Post = ({ post }) => {
+
+    const [postsList, setPostsList] = useState(posts);
+
     const handleEditPost = () => {
         // Implement logic to edit the post
       };
     
       const handleDeletePost = () => {
-        // Implement logic to delete the post
+        setPostsList([...postsList].pop(post))
       };
     
       const handleAddComment = () => {
@@ -23,36 +27,45 @@ const Post = ({ post }) => {
 
   return (
     <div className="card">
-            <div className="dropdown ms-auto">
-                <i className="bi bi-three-dots" data-bs-toggle="dropdown"></i>
-                <ul className="dropdown-menu">
-                    <li>
-                    <span className="dropdown-item">
-                        <i className="fas fa-pen mx-2"></i> Edit Post
-                    </span>
-                    </li>
-                    <li>
-                    <span className="dropdown-item">
-                        <i className="fas fa-trash mx-2"></i> Delete Post
-                    </span>
-                    </li>
-                </ul>
-            </div>
-      <img src={post.img} alt={`Post ${post.id}`} className="card-img-top" />
+      <nav className="navbar navbar-expand-lg bg-body-tertiary flex-column">
+        <div className="container-fluid">
+          <div className="title me-2">{post.author}</div>     
+          <img src={post.img} className="card-img-top" />
+          <div className="dropdown ms-auto">
+                  <i className="bi bi-three-dots" data-bs-toggle="dropdown"></i>
+                  <ul className="dropdown-menu">
+                      <li>
+                      <span className="dropdown-item">
+                          <i className="bi bi-pencil"></i> Edit Post
+                      </span>
+                      </li>
+                      <li>
+                      <span className="dropdown-item" onClick={handleDeletePost}>
+                          <i className="bi bi-trash"></i> Delete Post
+                      </span>
+                      </li>
+                  </ul>
+          </div>
+          
+        </div>
+      </nav>
+            
       <div className="card-body">
+        <img src={post.img} className="card-img-top" />
         <h5 className="card-title">{post.title}</h5>
         <p className="card-text">{post.content}</p>
-            <div className="grid gap-3">
-                <button className="btn btn-success g-col-6" onClick={handleLike}>
-                Like ({post.likes})
-                </button>
-                <button className="btn btn-info g-col-6" onClick={handleAddComment}>
-                Add Comment
-                </button>
-                <button className="btn btn-secondary g-col-6" onClick={handleShare}>
-                Share
-                </button>
-            </div> 
+        <div className="grid gap-3">
+          <button className="btn btn-outline-info me-2" onClick={handleAddComment}>
+            <i class="fa fa-comments"></i> Comments
+          </button>
+          <button className="btn btn-outline-success me-2" onClick={handleLike}>
+            <i class="fa fa-thumbs-up"></i> ({post.likes})
+          </button>
+          <button className="btn btn-outline-warning text-reset me-2"  onClick={handleShare} aria-label="Close">
+            <i class="fa fa-share"></i>
+          </button>
+        </div>
+        <p className="card-text">{post.date}</p> 
         {/* Display comments here */}
       </div>
     </div>
