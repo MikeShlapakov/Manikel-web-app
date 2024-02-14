@@ -1,10 +1,16 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import users from "../../data/users.json"
+import Alert from "../../alerts/Alert"
 
 const SignUpPage = () => {
-  const navigate = useNavigate(); // Use useNavigate hook
+  const navigate = useNavigate(); 
 
-  const [formData, setFormData] = useState({
+  const [usersList, setUsersList] = useState(users)
+
+  const [alertVisible, setAlertVisible] = useState(false); // State to control alert visibility
+
+  const [user, setUser] = useState({
     username: '',
     nickname: '',
     password: '',
@@ -13,20 +19,46 @@ const SignUpPage = () => {
   });
 
   const handleChange = (e) => {
-    const { name, value, type } = e.target;
+    const { id, value, type } = e.target;
 
-    setFormData((prevData) => ({
+    setUser((prevData) => ({
       ...prevData,
-      [name]: type === 'file' ? e.target.files[0] : value,
+      [id]: type === 'file' ? e.target.files[0] : value,
     }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    navigate("/feed")
+
+      // Check if the new user already exists
+    const isUserExists = users.some((u) => u.username === user.username);
+
+    if (isUserExists) {
+      setAlertVisible(true);
+    }
+    else{
+      const newUser= {
+        id: Date.now(), // Use a unique identifier (e.g., timestamp) as an ID
+        username: user.username,
+        password: user.password,
+        nickname: user.nickname, // You might want to use a different field for the nickname
+        img: user.profilePicture, // Set a default image or provide a way to upload an image
+      };
+
+      setUsersList([...usersList, newUser]);
+    }
+
+    console.log(usersList);
+    // navigate("/feed")
+    
     // Handle form submission or validation logic here
     // console.log('Form submitted:', formData);
   };
+
+  const handleAlertClose = () => {
+    setAlertVisible(false);
+  };
+
 
   return (
     <div className="container mt-5">
@@ -42,7 +74,7 @@ const SignUpPage = () => {
               </div>
               <form onSubmit={handleSubmit}>
                 <div className="mb-3">
-                  <input type="text" className="form-control" id="username" name="username" onChange={handleChange} required  placeholder="Username" />
+                  <input type="username" className="form-control" id="username" name="username" onChange={handleChange} required  placeholder="Username" />
                 </div>
                 <div className="mb-3">
                   <input type="nickname" className="form-control" id="nickname" name="nickname" onChange={handleChange} required  placeholder="Nickname" />
@@ -57,9 +89,11 @@ const SignUpPage = () => {
                   <label htmlFor="profilePicture" className="form-label">Profile Picture</label>
                   <input type="file" className="form-control" id="profilePicture" name="profilePicture" accept="image/*" onChange={handleChange} />
                 </div>
-                <div className="d-grid gap-2 col-7 mx-auto">
+                <div className="d-grid gap-2 col-7 mx-auto mb-3">
                   <button type="submit" className="btn btn-primary">Sign Up</button>
                 </div>
+                {/* alerts */}
+                {alertVisible && (<Alert  message="User already exists! Please choose a different username." type="success" onClose={handleAlertClose}/>)} 
               </form>
             </div>
           </div>

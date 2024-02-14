@@ -40,19 +40,19 @@ const Post = ({ post }) => {
             </div>
       <img src={post.img} alt={`Post ${post.id}`} className="card-img-top" />
       <div className="card-body">
-      <h5 class="card-title">Card title</h5>
-    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-        <div className="grid gap-3">
-            <button className="btn btn-success g-col-6" onClick={handleLike}>
-            Like ({post.likes})
-            </button>
-            <button className="btn btn-info g-col-6" onClick={handleAddComment}>
-            Add Comment
-            </button>
-            <button className="btn btn-secondary g-col-6" onClick={handleShare}>
-            Share
-            </button>
-        </div> 
+        <h5 className="card-title">{post.title}</h5>
+        <p className="card-text">{post.content}</p>
+            <div className="grid gap-3">
+                <button className="btn btn-success g-col-6" onClick={handleLike}>
+                Like ({post.likes})
+                </button>
+                <button className="btn btn-info g-col-6" onClick={handleAddComment}>
+                Add Comment
+                </button>
+                <button className="btn btn-secondary g-col-6" onClick={handleShare}>
+                Share
+                </button>
+            </div> 
         {/* Display comments here */}
       </div>
     </div>

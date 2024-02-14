@@ -1,29 +1,47 @@
 import { useState } from "react";
 import {Link, useNavigate} from 'react-router-dom';
+import users from '../../data/users.json'
+import Alert from "../../alerts/Alert";
 
 function LoginPage() {
   const navigate = useNavigate(); // Use useNavigate hook
 
-  const [formData, setFormData] = useState({
+  const [usersList, setUsersList] = useState(users) 
+
+  const [alertVisible, setAlertVisible] = useState(false); // State to control alert visibility
+
+  const [user, setUser] = useState({
     username: '',
     password: '',
   });
 
   const handleChange = (e) => {
-    const { name, value, type } = e.target;
-
-    setFormData((prevData) => ({
+    const { id, value} = e.target;
+    setUser((prevData) => ({
       ...prevData,
-      [name]: type === 'file' ? e.target.files[0] : value,
+      [id]: value
     }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    navigate("/feed")
-    // Handle form submission or validation logic here
-    // console.log('Form submitted:', formData);
+
+      // Check if the new user already exists
+    const isUserExists = users.some((u) => (u.username === user.username & u.password === user.password));
+    // console.log(user)
+    if (!isUserExists) {
+      setAlertVisible(true);
+    }
+    else{
+      navigate("/feed")
+    }
+
   };
+
+  const handleAlertClose = () => {
+    setAlertVisible(false);
+  };
+
 
   return (
     <div className="container mt-5">
@@ -39,14 +57,15 @@ function LoginPage() {
                 </div>
             <form onSubmit={handleSubmit}>
             <div className="d-grid gap-2 col-10 mx-auto mb-3">
-                <input type="username" className="form-control" id="username" onChange={handleChange} placeholder="Username" />
+                <input type="text" className="form-control" id="username" onChange={handleChange} placeholder="Username" />
               </div>
               <div className="d-grid gap-2 col-10 mx-auto mb-3">
                 <input type="password" className="form-control" id="password" onChange={handleChange} placeholder="Password" />
               </div>
-              <div className="d-grid gap-2 col-7 mx-auto">
+              <div className="d-grid gap-2 col-7 mx-auto mb-3">
                 <button type="submit" className="btn btn-primary">Login</button>
               </div>
+              {alertVisible && (<Alert  message="User not found! Please check username and password." type="error" onClose={handleAlertClose}/>)} 
             </form>
             <div className="mt-3 text-center">
                 <p>Don't have an account? <Link to="/signup">Sign Up</Link></p>
