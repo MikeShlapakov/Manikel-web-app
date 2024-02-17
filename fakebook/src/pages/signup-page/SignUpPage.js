@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import users from "../../data/users.json"
 import Alert from "../../alerts/Alert"
 
@@ -8,7 +8,7 @@ const SignUpPage = () => {
 
   const [usersList, setUsersList] = useState(users)
 
-  const [alertVisible, setAlertVisible] = useState(false); // State to control alert visibility
+  const [alert, setAlert] = useState(null); // State to control alert
 
   const [user, setUser] = useState({
     username: '',
@@ -34,7 +34,7 @@ const SignUpPage = () => {
     const isUserExists = users.some((u) => u.username === user.username);
 
     if (isUserExists) {
-      setAlertVisible(true);
+      setAlert(<Alert  message="User already exists! Please choose a different username." type="error" onClose={handleAlertClose}/>);
     }
     else{
       const newUser= {
@@ -46,18 +46,13 @@ const SignUpPage = () => {
       };
 
       setUsersList([...usersList, newUser]);
-      navigate("/feed")
+      navigate("/")
     }
-    // 
-    
-    // Handle form submission or validation logic here
-    // console.log('Form submitted:', formData);
   };
 
   const handleAlertClose = () => {
-    setAlertVisible(false);
+    setAlert(null);
   };
-
 
   return (
     <div className="container mt-5">
@@ -86,13 +81,15 @@ const SignUpPage = () => {
                 </div>
                 <div className="mb-3">
                   <label htmlFor="profilePicture" className="form-label">Profile Picture</label>
-                  <input type="file" className="form-control" id="profilePicture" name="profilePicture" accept="image/*" onChange={handleChange} />
+                  <input type="file" className="form-control" id="profilePicture" name="profilePicture" accept="image/*" required onChange={handleChange} />
                 </div>
                 <div className="d-grid gap-2 col-7 mx-auto mb-3">
                   <button type="submit" className="btn btn-primary">Sign Up</button>
                 </div>
-                {/* alerts */}
-                {alertVisible && (<Alert  message="User already exists! Please choose a different username." type="error" onClose={handleAlertClose}/>)} 
+                {alert}
+                <div className="mt-3 text-center">
+                  <p>Back to <Link to="/">Login</Link></p>
+                </div>
               </form>
             </div>
           </div>

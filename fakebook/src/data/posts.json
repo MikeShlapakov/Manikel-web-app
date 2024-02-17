@@ -1,12 +1,12 @@
 [
-    { "id": 1, "img": "image1.jpg", "author":"mike", "date":"1/1/1", "title": "post1", "content":"some text", "comments": ["First", "hi"], "likes": 1 },
-    { "id": 2, "img": "image2.jpg", "author":"mike", "date":"1/1/1", "title": "post1", "content":"some text", "comments": [], "likes": 2 },
-    { "id": 3, "img": "image3.jpg", "author":"mike", "date":"1/1/1", "title": "post1", "content":"some text", "comments": [], "likes": 3 },
-    { "id": 4, "img": "image4.jpg", "author":"mike", "date":"1/1/1", "title": "post1", "content":"some text", "comments": [], "likes": 0 },
-    { "id": 5, "img": "image5.jpg", "author":"mike", "date":"1/1/1", "title": "post1", "content":"some text", "comments": [], "likes": 0 },
-    { "id": 6, "img": "image6.jpg", "author":"mike", "date":"1/1/1", "title": "post1", "content":"some text", "comments": [], "likes": 1 },
-    { "id": 7, "img": "image7.jpg", "author":"mike", "date":"1/1/1", "title": "post1", "content":"some text", "comments": [], "likes": 2 },
-    { "id": 8, "img": "image8.jpg", "author":"mike", "date":"1/1/1", "title": "post1", "content":"some text", "comments": [], "likes": 3 },    
-    { "id": 9, "img": "image9.jpg", "author":"mike", "date":"1/1/1", "title": "post1", "content":"some text", "comments": [], "likes": 4 },
-    { "id": 10, "img": "image10.jpg", "author":"mike", "date":"1/1/1", "title": "post1", "content":"some text", "comments": [], "likes": 5 }
+    { "id": 1, "img": "img1.jpg", "author":"mike", "profile": "img12.jpg", "date":"1/1/1", "title": "post1", "content":"some text", "comments": ["First", "hi"], "likes": 1 },
+    { "id": 2, "img": "img2.jpg", "author":"mike", "profile": "img12.jpg", "date":"1/1/1", "title": "post2", "content":"some text", "comments": [], "likes": 2 },
+    { "id": 3, "img": "img3.jpg", "author":"mike", "profile": "img12.jpg", "date":"1/1/1", "title": "post3", "content":"some text", "comments": [], "likes": 3 },
+    { "id": 4, "img": "img4.jpg", "author":"mike", "profile": "img12.jpg", "date":"1/1/1", "title": "post4", "content":"some text", "comments": [], "likes": 0 },
+    { "id": 5, "img": "img5.jpg", "author":"mike", "profile": "img12.jpg", "date":"1/1/1", "title": "post5", "content":"some text", "comments": [], "likes": 0 },
+    { "id": 6, "img": "img6.jpg", "author":"manuel", "profile": "img11.jpg", "date":"1/1/1", "title": "post6", "content":"some text", "comments": [], "likes": 1 },
+    { "id": 7, "img": "img7.jpg", "author":"manuel", "profile": "img11.jpg", "date":"1/1/1", "title": "post7", "content":"some text", "comments": [], "likes": 2 },
+    { "id": 8, "img": "img8.jpg", "author":"manuel", "profile": "img11.jpg", "date":"1/1/1", "title": "post8", "content":"some text", "comments": [], "likes": 3 },    
+    { "id": 9, "img": "img9.jpg", "author":"manuel", "profile": "img11.jpg", "date":"1/1/1", "title": "post9", "content":"some text", "comments": [], "likes": 4 },
+    { "id": 10, "img": "img10.jpg", "author":"manuel", "profile": "img11.jpg", "date":"1/1/1", "title": "post10", "content":"some text", "comments": [], "likes": 5 }
 ]

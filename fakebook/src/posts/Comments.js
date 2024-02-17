@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 
 const Comments = ({ show, handleClose, addComment, post }) => {
 
-    console.log(post)
-    console.log(1)
+    // console.log(post)
+    // console.log(1)
 
     const existingComments = post? post.comments: [];
 
@@ -59,7 +59,7 @@ const Comments = ({ show, handleClose, addComment, post }) => {
             <div className="modal-body">
                 <ul className="list-group">
                     {existingComments.map((comment, index) => (
-                        <li key={index} class="list-group-item d-flex justify-content-between align-items-center">
+                        <li key={index} className="list-group-item d-flex justify-content-between align-items-center">
                         {editingCommentIndex === index ? (
                             // If editing, display input field
                             <>
@@ -102,12 +102,12 @@ const Comments = ({ show, handleClose, addComment, post }) => {
                 {/* Section for adding new comments */}
             </div>
             <div className="modal-footer">
-                <input type="text" class="form-control" aria-label="Recipient's username" aria-describedby="button-addon2"
+                <input type="text" className="form-control" aria-label="Recipient's username" aria-describedby="button-addon2"
                             value={newComment}
                             onChange={(e) => setNewComment(e.target.value)}
                             onKeyDown={handleKeyDown}
                             placeholder="Enter your comment..."></input>
-                <button class="btn btn-outline-secondary" type="button" id="button-addon2" onClick={handleAddComment} >Add Comment</button>
+                <button className="btn btn-outline-secondary" type="button" id="button-addon2" onClick={handleAddComment} >Add Comment</button>
             </div>
           </div>
         </div>
@@ -116,18 +116,3 @@ const Comments = ({ show, handleClose, addComment, post }) => {
   };
 
 export default Comments;
-
-<ul class="list-group">
-  <li class="list-group-item d-flex justify-content-between align-items-center">
-    A list item
-    <span class="badge bg-primary rounded-pill">14</span>
-  </li>
-  <li class="list-group-item d-flex justify-content-between align-items-center">
-    A second list item
-    <span class="badge bg-primary rounded-pill">2</span>
-  </li>
-  <li class="list-group-item d-flex justify-content-between align-items-center">
-    A third list item
-    <span class="badge bg-primary rounded-pill">1</span>
-  </li>
-</ul>

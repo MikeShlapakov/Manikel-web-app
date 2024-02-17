@@ -1,11 +1,26 @@
-import React, { useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
+import { getLoggedInUser, logout } from '../../Authentication';
+import users from '../../data/users';
 import Post from '../../posts/Post';
 import posts from '../../data/posts.json'
 import Comments from '../../posts/Comments';
 import { format } from 'date-fns'
 
 function FeedPage() {
+  
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const loggedInUser = getLoggedInUser();
+    if (!loggedInUser) {
+      navigate("/");
+    }
+    else{
+      setUser(users.find((user) => user.username === loggedInUser.loggedInUser));
+    }
+  }, []);
+  
   const navigate = useNavigate(); 
 
   const [postsList, setPostsList] = useState(posts);
@@ -45,24 +60,37 @@ function FeedPage() {
 
   const handleChange = (e) => {
     const { id, value, type } = e.target;
+    // console.log(e.target.files[0])
+    // console.log(e.target.files[0].name)
+    if (type !== 'file'){
+      setNewPost((prevData) => ({
+        ...prevData,
+        [id]: type === 'file' ? e.target.files[0].name : value,
+      }));
+    }
+    else{
+      if(e.target.files[1] == 0){
 
-    setNewPost((prevData) => ({
-      ...prevData,
-      [id]: type === 'file' ? e.target.files[0] : value,
-    }));
+      }
+      else{
+        setNewPost((prevData) => ({
+          ...prevData,
+          [id]: type === 'file' ? e.target.files[0].name : value,
+        }));
+      }
+    }
   };
 
   const handleAddPost = (e) => {
     e.preventDefault();
-    
-    console.log(Date.now());
 
     const newPost= {
       id: Date.now(), // Use a unique identifier (e.g., timestamp) as an ID
       title: addPost.title,
       content: addPost.content, // You might want to use a different field for the nickname
       img: addPost.picture,
-      author: "mike",
+      author: user.nickname,
+      profile: user.img,
       date:format(Date.now(), "dd-MM-yyyy"),
       comments: [], // Set a default image or provide a way to upload an image
       likes: 0, // Set a default image or provide a way to upload an image
@@ -93,6 +121,7 @@ function FeedPage() {
   };
 
   const backToLogin = () => {
+    logout()
     navigate("/")
   };
 
@@ -144,7 +173,7 @@ function FeedPage() {
                 </div>
                 <div className="mb-3">
                   <label className="form-label">Add Picture:</label>
-                  <input type="file" className="form-control" id="profilePicture" name="profilePicture" accept="image/*" onChange={handleChange} />
+                  <input type="file" className="form-control" id="picture" name="profilePicture" accept="image/*" onChange={handleChange} />
                 </div>
               </form>
             </div>
@@ -175,7 +204,7 @@ function FeedPage() {
                 </div>
                 <div className="mb-3">
                   <label className="form-label">Add Picture:</label>
-                  <input type="file" className="form-control" id="profilePicture" name="profilePicture" accept="image/*" onChange={handleChange} />
+                  <input type="file" className="form-control" id="picture" name="profilePicture" accept="image/*" onChange={handleChange} />
                 </div>
               </form>
             </div>

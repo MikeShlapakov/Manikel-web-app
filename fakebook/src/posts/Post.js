@@ -33,11 +33,11 @@ const Post = ({ post, postsList, setPostsList, setEditPost, setShowCommentsModal
   };
 
   return (
-    <div className="card">
+    <div className="card" style={{ width: '400px', height: '500px' }}>
       <nav className="navbar navbar-expand-lg bg-body-tertiary flex-column">
         <div className="container-fluid">
           <div className="title me-2">{post.author}</div>     
-          <img src={post.img} className="card-img-top" />
+          <img src={post.profile} className="card-img-top" style={{ width: '50px', height: '50px' }}/>
           <div className="dropdown ms-auto">
                   <i className="bi bi-three-dots" data-bs-toggle="dropdown"></i>
                   <ul className="dropdown-menu">
@@ -53,7 +53,6 @@ const Post = ({ post, postsList, setPostsList, setEditPost, setShowCommentsModal
                       </li>
                   </ul>
           </div>
-          
         </div>
       </nav>
             
