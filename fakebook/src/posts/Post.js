@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 // import posts from '../data/posts.json'
 
-const Post = ({ post, postsList, setPostsList, setEditPost }) => {
+const Post = ({ post, postsList, setPostsList, setEditPost, setShowCommentsModal, setPostComments}) => {
 
   // const [postsList, setPostsList] = useState(posts);
 
@@ -11,12 +11,12 @@ const Post = ({ post, postsList, setPostsList, setEditPost }) => {
   };
 
   const handleDeletePost = () => {
-    // const updatedPosts = 
     setPostsList(postsList.filter((p) => p.id !== post.id))
   };
 
   const handleAddComment = () => {
-    // Implement logic to add a comment
+    setPostComments(post)
+    setShowCommentsModal(true)
   };
 
   const handleShare = () => {
@@ -34,7 +34,6 @@ const Post = ({ post, postsList, setPostsList, setEditPost }) => {
 
   return (
     <div className="card">
-
       <nav className="navbar navbar-expand-lg bg-body-tertiary flex-column">
         <div className="container-fluid">
           <div className="title me-2">{post.author}</div>     

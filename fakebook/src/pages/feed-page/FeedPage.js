@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import Post from '../../posts/Post';
 import posts from '../../data/posts.json'
+import Comments from '../../posts/Comments';
 import { format } from 'date-fns'
 
 function FeedPage() {
@@ -18,6 +19,29 @@ function FeedPage() {
     content: '',
     picture: null,
   });
+
+  const [showCommentsModal, setShowCommentsModal] = useState(false);
+
+  const [postComments, setPostComments] = useState(null);
+
+  const handleShowCommentsModal = () => {
+    setShowCommentsModal(true);
+  };
+
+  const handleCloseCommentsModal = () => {
+    setShowCommentsModal(false);
+  };
+
+  const handleAddComment = (post, newComments) => {
+    // Handle adding the comment to the state or perform any desired action
+    const updateComments = {
+      ...post,
+      comments: newComments
+    }
+    setPostsList(postsList.map((p) => (p.id === updateComments.id ? updateComments : p)))
+    // setPostComments(newComments);
+    handleCloseCommentsModal();
+  };
 
   const handleChange = (e) => {
     const { id, value, type } = e.target;
@@ -162,6 +186,14 @@ function FeedPage() {
           </div>
         </div>
       </div>
+
+      <Comments
+        show={showCommentsModal}
+        handleClose={handleCloseCommentsModal}
+        addComment={handleAddComment}
+        post={postComments}
+      />
+
       {/* Toggle button for the Offcanvas sidebar */}
       <button className="btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvas" aria-controls="offcanvas" >
         <i className="fa fa-bars"></i>
@@ -215,7 +247,7 @@ function FeedPage() {
       <div className="row justify-content-center pt-4">
         {postsList.reverse().map((post) => (
           <div key={post.id} className="col-md-4 mb-3">
-            <Post post={post} postsList={postsList} setPostsList={setPostsList} setEditPost={setEditPost}/>
+            <Post post={post} postsList={postsList} setPostsList={setPostsList} setEditPost={setEditPost} setShowCommentsModal={setShowCommentsModal} setPostComments={setPostComments}/>
           </div>
         ))}
       </div>
