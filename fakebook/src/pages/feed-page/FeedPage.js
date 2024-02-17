@@ -56,7 +56,7 @@ function FeedPage() {
 
 
   return (
-    <div className={`container-fluid pt-4 pb-4 ${darkTheme ? "container-dark bg-dark" : "bg-light"}`} data-bs-theme={darkTheme ? "dark" : "light"}>
+    <div className={`container-fluid pt-2 pb-4 ${darkTheme ? "container-dark bg-dark" : "bg-light"}`} data-bs-theme={darkTheme ? "dark" : "light"}>
             {/* Offcanvas sidebar */}
       <div className="offcanvas offcanvas-start" tabIndex="-1" id="offcanvas" aria-labelledby="offcanvasLabel">
         <div className="offcanvas-header">
@@ -113,7 +113,7 @@ function FeedPage() {
       </button>
 
       <div className='container'> 
-      <nav className="navbar navbar-expand-lg bg-body-tertiary flex-column">
+      <nav className="navbar navbar-expand-lg bg-body-tertiary p-2">
         <div className="container-fluid">
           <div className="navbar-brand">Menu</div>
           <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="true">
@@ -157,10 +157,10 @@ function FeedPage() {
         </div>
       </nav>
 
-      <div className="row justify-content-center ">
+      <div className="row justify-content-center pt-4">
         {postsList.reverse().map((post) => (
           <div key={post.id} className="col-md-4 mb-3">
-            <Post post={post} />
+            <Post post={post} postsList={postsList} setPostsList={setPosts}/>
           </div>
         ))}
       </div>

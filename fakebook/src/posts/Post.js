@@ -1,16 +1,20 @@
 import React, { useState } from 'react';
-import posts from '../data/posts.json'
+// import posts from '../data/posts.json'
 
-const Post = ({ post }) => {
+const Post = ({ post, postsList, setPostsList }) => {
 
-    const [postsList, setPostsList] = useState(posts);
+    // const [postsList, setPostsList] = useState(posts);
 
     const handleEditPost = () => {
+      console.log(postsList.filter((p) => p.id !== post.id))
+      const updatedPosts = postsList.filter((p) => p.id !== post.id)
+      setPostsList(updatedPosts)
         // Implement logic to edit the post
       };
     
       const handleDeletePost = () => {
-        setPostsList([...postsList].pop(post))
+        const updatedPosts = postsList.filter((p) => p.id !== post.id)
+        setPostsList(updatedPosts)
       };
     
       const handleAddComment = () => {
@@ -35,7 +39,7 @@ const Post = ({ post }) => {
                   <i className="bi bi-three-dots" data-bs-toggle="dropdown"></i>
                   <ul className="dropdown-menu">
                       <li>
-                      <span className="dropdown-item">
+                      <span className="dropdown-item" onClick={handleEditPost}>
                           <i className="bi bi-pencil"></i> Edit Post
                       </span>
                       </li>

@@ -46,10 +46,9 @@ const SignUpPage = () => {
       };
 
       setUsersList([...usersList, newUser]);
+      navigate("/feed")
     }
-
-    console.log(usersList);
-    // navigate("/feed")
+    // 
     
     // Handle form submission or validation logic here
     // console.log('Form submitted:', formData);
@@ -74,10 +73,10 @@ const SignUpPage = () => {
               </div>
               <form onSubmit={handleSubmit}>
                 <div className="mb-3">
-                  <input type="username" className="form-control" id="username" name="username" onChange={handleChange} required  placeholder="Username" />
+                  <input type="text" className="form-control" id="username" name="username" onChange={handleChange} required  placeholder="Username" />
                 </div>
                 <div className="mb-3">
-                  <input type="nickname" className="form-control" id="nickname" name="nickname" onChange={handleChange} required  placeholder="Nickname" />
+                  <input type="text" className="form-control" id="nickname" name="nickname" onChange={handleChange} required  placeholder="Nickname" />
                 </div>
                 <div className="mb-3">
                   <input type="password" className="form-control" id="password" name="password" onChange={handleChange} required  placeholder="Password" />
@@ -93,7 +92,7 @@ const SignUpPage = () => {
                   <button type="submit" className="btn btn-primary">Sign Up</button>
                 </div>
                 {/* alerts */}
-                {alertVisible && (<Alert  message="User already exists! Please choose a different username." type="success" onClose={handleAlertClose}/>)} 
+                {alertVisible && (<Alert  message="User already exists! Please choose a different username." type="error" onClose={handleAlertClose}/>)} 
               </form>
             </div>
           </div>
