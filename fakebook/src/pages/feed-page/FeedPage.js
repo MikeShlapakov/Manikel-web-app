@@ -7,9 +7,11 @@ import { format } from 'date-fns'
 function FeedPage() {
   const navigate = useNavigate(); 
 
-  const [postsList, setPosts] = useState(posts);
+  const [postsList, setPostsList] = useState(posts);
   
   const [darkTheme, setDarkTheme] = useState(false);
+
+  const [editPost, setEditPost] = useState(null);
 
   const [addPost, setNewPost] = useState({
     title: '',
@@ -42,8 +44,28 @@ function FeedPage() {
       likes: 0, // Set a default image or provide a way to upload an image
     };
   
-    setPosts([...postsList, newPost]);
+    setPostsList([...postsList, newPost]);
     // console.log(posts)
+  };
+
+  const handleEditPost = (e) => {
+    e.preventDefault();
+
+    // Update the state with the modified post
+    // console.log(editPost);
+
+    const editedPost = {
+      ...editPost,
+      title: addPost.title,
+      content: addPost.content,
+      img: addPost.picture
+    };
+
+    console.log(editedPost);
+    // Save the modified post to the state
+    setPostsList(postsList.map((p) => (p.id === editedPost.id ? editedPost : p)));
+
+    setEditPost(null);
   };
 
   const backToLogin = () => {
@@ -54,6 +76,9 @@ function FeedPage() {
     setDarkTheme(!darkTheme);
   };
 
+  const handleClose = () => {
+    setEditPost(null);
+  };
 
   return (
     <div className={`container-fluid pt-2 pb-4 ${darkTheme ? "container-dark bg-dark" : "bg-light"}`} data-bs-theme={darkTheme ? "dark" : "light"}>
@@ -107,6 +132,36 @@ function FeedPage() {
         </div>
       </div>
 
+      <div className={`modal ${editPost ? 'fade show' : 'fade'}`} style={{ display: editPost ? 'block' : 'none' }}>
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h1 className="modal-title fs-5" id="exampleModalLabel">Edit Post</h1>
+              <button type="button" className="btn-close" onClick={handleClose}></button>
+            </div>
+            <div className="modal-body">
+              <form>
+                <div className="mb-3">
+                  <label className="col-form-label">Title:</label>
+                  <input type="text" className="form-control" id="title" onChange={handleChange}></input>
+                </div>
+                <div className="mb-3">
+                  <label className="col-form-label">Message:</label>
+                  <textarea className="form-control" id="content" onChange={handleChange}></textarea>
+                </div>
+                <div className="mb-3">
+                  <label className="form-label">Add Picture:</label>
+                  <input type="file" className="form-control" id="profilePicture" name="profilePicture" accept="image/*" onChange={handleChange} />
+                </div>
+              </form>
+            </div>
+            <div className="modal-footer">
+              <button type="button" className="btn btn-secondary" onClick={handleClose}>Cencel</button>
+              <button type="button" className="btn btn-primary" onClick={handleEditPost}>Edit Post</button>
+            </div>
+          </div>
+        </div>
+      </div>
       {/* Toggle button for the Offcanvas sidebar */}
       <button className="btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvas" aria-controls="offcanvas" >
         <i className="fa fa-bars"></i>
@@ -122,7 +177,7 @@ function FeedPage() {
           <div className="collapse navbar-collapse w-100" id="navbarSupportedContent">
             <ul className="navbar-nav ml-auto">
               <li className="nav-item me-2">
-              <button className={`btn btn-outline-${darkTheme ? "light" : "dark"} ml-2`} data-bs-toggle="modal" data-bs-target="#addPost">
+                <button className={`btn btn-outline-${darkTheme ? "light" : "dark"} ml-2`} data-bs-toggle="modal" data-bs-target="#addPost">
                     Add post
                 </button>
               </li>
@@ -160,7 +215,7 @@ function FeedPage() {
       <div className="row justify-content-center pt-4">
         {postsList.reverse().map((post) => (
           <div key={post.id} className="col-md-4 mb-3">
-            <Post post={post} postsList={postsList} setPostsList={setPosts}/>
+            <Post post={post} postsList={postsList} setPostsList={setPostsList} setEditPost={setEditPost}/>
           </div>
         ))}
       </div>

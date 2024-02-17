@@ -1,36 +1,40 @@
 import React, { useState } from 'react';
 // import posts from '../data/posts.json'
 
-const Post = ({ post, postsList, setPostsList }) => {
+const Post = ({ post, postsList, setPostsList, setEditPost }) => {
 
-    // const [postsList, setPostsList] = useState(posts);
+  // const [postsList, setPostsList] = useState(posts);
 
-    const handleEditPost = () => {
-      console.log(postsList.filter((p) => p.id !== post.id))
-      const updatedPosts = postsList.filter((p) => p.id !== post.id)
-      setPostsList(updatedPosts)
-        // Implement logic to edit the post
-      };
-    
-      const handleDeletePost = () => {
-        const updatedPosts = postsList.filter((p) => p.id !== post.id)
-        setPostsList(updatedPosts)
-      };
-    
-      const handleAddComment = () => {
-        // Implement logic to add a comment
-      };
-    
-      const handleShare = () => {
-        // Implement logic to share the post
-      };
-    
-      const handleLike = () => {
-        // Implement logic to handle liking a post
-      };
+  const handleEditPost = () => {
+    setEditPost(post)
+    // setEditPostId(post)
+  };
+
+  const handleDeletePost = () => {
+    // const updatedPosts = 
+    setPostsList(postsList.filter((p) => p.id !== post.id))
+  };
+
+  const handleAddComment = () => {
+    // Implement logic to add a comment
+  };
+
+  const handleShare = () => {
+    // Implement logic to share the post
+  };
+
+  const handleLike = () => {
+    const updateLikes = {
+      ...post,
+      likes: post.likes+1
+    }
+    setPostsList(postsList.map((p) => (p.id === updateLikes.id ? updateLikes : p)))
+    // Implement logic to handle liking a post
+  };
 
   return (
     <div className="card">
+
       <nav className="navbar navbar-expand-lg bg-body-tertiary flex-column">
         <div className="container-fluid">
           <div className="title me-2">{post.author}</div>     
@@ -60,13 +64,13 @@ const Post = ({ post, postsList, setPostsList }) => {
         <p className="card-text">{post.content}</p>
         <div className="grid gap-3">
           <button className="btn btn-outline-info me-2" onClick={handleAddComment}>
-            <i class="fa fa-comments"></i> Comments
+            <i className="fa fa-comments"></i> Comments ({post.comments.length})
           </button>
           <button className="btn btn-outline-success me-2" onClick={handleLike}>
-            <i class="fa fa-thumbs-up"></i> ({post.likes})
+            <i className="fa fa-thumbs-up"></i> ({post.likes})
           </button>
           <button className="btn btn-outline-warning text-reset me-2"  onClick={handleShare} aria-label="Close">
-            <i class="fa fa-share"></i>
+            <i className="fa fa-share"></i>
           </button>
         </div>
         <p className="card-text">{post.date}</p> 
