@@ -67,9 +67,31 @@ const Post = ({ post, postsList, setPostsList, setEditPost, setShowCommentsModal
           <button className="btn btn-outline-success me-2" onClick={handleLike}>
             <i className="fa fa-thumbs-up"></i> ({post.likes})
           </button>
-          <button className="btn btn-outline-warning text-reset me-2"  onClick={handleShare} aria-label="Close">
+          <div className="btn btn-outline-warning me-2"  data-bs-toggle="dropdown">
             <i className="fa fa-share"></i>
-          </button>
+            <ul className="dropdown-menu">
+                <li>
+                <span className="dropdown-item">
+                    <i className="bi bi-archive"></i> archive
+                </span>
+                </li>
+                <li>
+                <span title="delete btn" className="dropdown-item">
+                    <i className="fa fa-google"></i> google
+                </span>
+                </li>
+                <li>
+                <span className="dropdown-item">
+                  <i className="fa fa-facebook"></i> facebook
+                </span>
+                </li>
+                <li>
+                <span title="delete btn" className="dropdown-item">
+                  <i className="fa fa-whatsapp"></i> whatsapp
+                </span>
+                </li>
+            </ul>
+          </div>
         </div>
         <p className="card-text">{post.date}</p> 
         {/* Display comments here */}
@@ -77,5 +99,10 @@ const Post = ({ post, postsList, setPostsList, setEditPost, setShowCommentsModal
     </div>
   );
 };
+
+<button type="button" class="btn btn-secondary"
+        >
+  Custom popover
+</button>
 
 export default Post;
