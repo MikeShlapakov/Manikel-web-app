@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import { getLoggedInUser, logout } from '../../Authentication';
 import users from '../../data/users';
@@ -8,7 +8,8 @@ import Comments from '../../posts/Comments';
 import { format } from 'date-fns'
 
 function FeedPage() {
-  
+  const navigate = useNavigate(); 
+
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -19,9 +20,7 @@ function FeedPage() {
     else{
       setUser(users.find((user) => user.username === loggedInUser.loggedInUser));
     }
-  }, []);
-  
-  const navigate = useNavigate(); 
+  }, [navigate]);
 
   const [postsList, setPostsList] = useState(posts);
   
@@ -39,46 +38,32 @@ function FeedPage() {
 
   const [postComments, setPostComments] = useState(null);
 
-  const handleShowCommentsModal = () => {
-    setShowCommentsModal(true);
-  };
-
   const handleCloseCommentsModal = () => {
     setShowCommentsModal(false);
   };
 
   const handleAddComment = (post, newComments) => {
-    // Handle adding the comment to the state or perform any desired action
+    // Handle adding comment to the state or perform any desired action
     const updateComments = {
       ...post,
       comments: newComments
     }
     setPostsList(postsList.map((p) => (p.id === updateComments.id ? updateComments : p)))
-    // setPostComments(newComments);
-    handleCloseCommentsModal();
+    setPostComments(updateComments);
+  };
+
+  const handleDeleteComment = (post) => {
+    // // Handle deleteing comment
+    setPostsList(postsList.map((p) => (p.id === post.id ? post : p)))
+    setPostComments(post);
   };
 
   const handleChange = (e) => {
     const { id, value, type } = e.target;
-    // console.log(e.target.files[0])
-    // console.log(e.target.files[0].name)
-    if (type !== 'file'){
-      setNewPost((prevData) => ({
-        ...prevData,
-        [id]: type === 'file' ? e.target.files[0].name : value,
-      }));
-    }
-    else{
-      if(e.target.files[1] == 0){
-
-      }
-      else{
-        setNewPost((prevData) => ({
-          ...prevData,
-          [id]: type === 'file' ? e.target.files[0].name : value,
-        }));
-      }
-    }
+    setNewPost((prevData) => ({
+      ...prevData,
+      [id]: type === 'file' ? e.target.files[0].name : value,
+    }));
   };
 
   const handleAddPost = (e) => {
@@ -136,21 +121,33 @@ function FeedPage() {
   return (
     <div className={`container-fluid pt-2 pb-4 ${darkTheme ? "container-dark bg-dark" : "bg-light"}`} data-bs-theme={darkTheme ? "dark" : "light"}>
             {/* Offcanvas sidebar */}
-      <div className="offcanvas offcanvas-start" tabIndex="-1" id="offcanvas" aria-labelledby="offcanvasLabel">
+      <div title="menu" className="offcanvas offcanvas-start" tabIndex="-1" id="offcanvas" aria-labelledby="offcanvasLabel">
         <div className="offcanvas-header">
           <h5 className="offcanvas-title" id="offcanvasLabel">Menu</h5>
           <button type="button" className="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div className="offcanvas-body">
-          {/* Sidebar content goes here */}
-          <button className="btn btn-primary" onClick={handleAddPost}>
-            Add Post
-          </button>
-          <input type="text" className="form-control" placeholder="Search" />
-          <button className="btn btn-warning mt-2" onClick={toggleTheme}>
-            {darkTheme ? 'Light Theme' : 'Dark Theme'}
-          </button>
-          {/* Add other sidebar items as needed */}
+          <ul className='navbar-nav'>
+            <li className="nav-item mb-2">          
+              <button title="add post" className={`btn btn-outline-${darkTheme ? "light" : "dark"} ml-2`} data-bs-toggle="modal" data-bs-target="#addPost">
+                Add Post
+              </button>
+            </li>
+            <li className="nav-item mb-2">
+              <input title="search input" type="text" className="form-control" placeholder="Search" /></li>
+            <li className="nav-item mb-2">
+              <button title="search btn" className="btn btn-outline-success m-auto" type="submit">Search</button></li>
+            <li className="nav-item mb-2">
+            <button title="theme" className="btn btn-warning mt-2" onClick={toggleTheme}>
+              {darkTheme ? 'Light Theme' : 'Dark Theme'}
+            </button>
+            </li>
+            <li className="nav-item mb-2">
+              <button title="back btn" className={`btn btn-outline-${darkTheme ? "light" : "dark"} ml-2`} onClick={backToLogin}>
+                  Back
+              </button>
+            </li>
+          </ul>
         </div>
       </div>
 
@@ -165,21 +162,21 @@ function FeedPage() {
               <form>
                 <div className="mb-3">
                   <label className="col-form-label">Title:</label>
-                  <input type="text" className="form-control" id="title" onChange={handleChange}></input>
+                  <input type="text" className="form-control" id="title" title="title" onChange={handleChange}></input>
                 </div>
                 <div className="mb-3">
                   <label className="col-form-label">Message:</label>
-                  <textarea className="form-control" id="content" onChange={handleChange}></textarea>
+                  <textarea className="form-control" id="content" title="content" onChange={handleChange}></textarea>
                 </div>
                 <div className="mb-3">
                   <label className="form-label">Add Picture:</label>
-                  <input type="file" className="form-control" id="picture" name="profilePicture" accept="image/*" onChange={handleChange} />
+                  <input type="file" className="form-control" id="picture" title="picture" accept="image/*" onChange={handleChange} />
                 </div>
               </form>
             </div>
             <div className="modal-footer">
               <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cencel</button>
-              <button type="button" className="btn btn-primary" onClick={handleAddPost}>Add Post</button>
+              <button type="button" className="btn btn-primary" title="confirmAdd" onClick={handleAddPost}>Add Post</button>
             </div>
           </div>
         </div>
@@ -220,6 +217,7 @@ function FeedPage() {
         show={showCommentsModal}
         handleClose={handleCloseCommentsModal}
         addComment={handleAddComment}
+        deleteComment={handleDeleteComment}
         post={postComments}
       />
 
@@ -229,7 +227,7 @@ function FeedPage() {
       </button>
 
       <div className='container'> 
-      <nav className="navbar navbar-expand-lg bg-body-tertiary p-2">
+      <nav title="menu" className="navbar navbar-expand-lg justify-content-between bg-body-tertiary p-2">
         <div className="container-fluid">
           <div className="navbar-brand">Menu</div>
           <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="true">
@@ -238,44 +236,32 @@ function FeedPage() {
           <div className="collapse navbar-collapse w-100" id="navbarSupportedContent">
             <ul className="navbar-nav ml-auto">
               <li className="nav-item me-2">
-                <button className={`btn btn-outline-${darkTheme ? "light" : "dark"} ml-2`} data-bs-toggle="modal" data-bs-target="#addPost">
+                <button title="add post" className={`btn btn-outline-${darkTheme ? "light" : "dark"} ml-2`} data-bs-toggle="modal" data-bs-target="#addPost">
                     Add post
                 </button>
               </li>
               <li className="nav-item me-2">
-                <button className={`btn btn-outline-${darkTheme ? "light" : "dark"} ml-2`} onClick={toggleTheme}>
+                <button title="theme" className={`btn btn-outline-${darkTheme ? "light" : "dark"} ml-2`} onClick={toggleTheme}>
                     {darkTheme ? 'Light Theme' : 'Dark Theme'}
                 </button>
               </li>
-              <li className="nav-item dropdown">
-                <button className={`btn btn-outline-${darkTheme ? "light" : "dark"} dropdown-toggle me-2`} href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Dropdown
-                </button>
-                <ul className={`dropdown-menu me-2`}>
-                  <li><a className="dropdown-item" href="#">Action</a></li>
-                  <li className="dropdown-divider"></li>
-                  <li><a className="dropdown-item" href="#">Something else here</a></li>
-                </ul>
-              </li>
-              <li className="nav-item me-2">
-              <input className="form-control me-2" type="search" placeholder="Search" aria-label="Search"></input>
-              </li>
-              <li className="nav-item me-2">
-              <button className="btn btn-outline-success me-2" type="submit">Search</button>
-              </li>
             </ul>
-            <form className="d-flex justify-content-start" role="search">
-              <button className={`btn btn-outline-${darkTheme ? "light" : "dark"} ml-2`} onClick={backToLogin}>
-                    Back
-                </button>
-            </form>
           </div>
+        </div>
+        <div className="container">
+          <input title="search input" className="form-control me-2" type="search" placeholder="Search" aria-label="Search"></input>
+          <button title="search btn" className="btn btn-outline-success me-2" type="submit">Search</button>
+        </div>
+        <div className="d-flex">
+          <button title="back btn" className={`btn btn-outline-${darkTheme ? "light" : "dark"} ml-2`} onClick={backToLogin}>
+            Back
+          </button>
         </div>
       </nav>
 
       <div className="row justify-content-center pt-4">
         {postsList.reverse().map((post) => (
-          <div key={post.id} className="col-md-4 mb-3">
+          <div title="post" key={post.id} className="col-md-4 mb-3">
             <Post post={post} postsList={postsList} setPostsList={setPostsList} setEditPost={setEditPost} setShowCommentsModal={setShowCommentsModal} setPostComments={setPostComments}/>
           </div>
         ))}
@@ -284,8 +270,5 @@ function FeedPage() {
     </div>
   );
 };
-
-<button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">Open modal for @mdo</button>
-
 
 export default FeedPage;

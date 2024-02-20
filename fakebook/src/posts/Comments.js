@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const Comments = ({ show, handleClose, addComment, post }) => {
+const Comments = ({ show, handleClose, addComment,deleteComment, post }) => {
 
     // console.log(post)
     // console.log(1)
@@ -39,6 +39,15 @@ const Comments = ({ show, handleClose, addComment, post }) => {
         setEditingCommentIndex(-1);
     }; 
 
+    const handleDeleteComment = (index) => {
+        // Ensure that existingComments is a state or a copy of your state array
+        const updatedComments = existingComments.filter((_, i) => i !== index);
+
+        // Assuming post is an object that contains a "comments" property
+        post.comments = updatedComments;
+        deleteComment(post)
+      };
+
     const handleKeyDown = (event) => {
         // If the user presses "Enter" while editing, prevent the default action and save the edited comment
         // console.log(event.key)
@@ -73,7 +82,6 @@ const Comments = ({ show, handleClose, addComment, post }) => {
                             </>
                             
                         ) : (
-                            // If not editing, display comment and edit button
                             <>
                             {comment}
                             <span className="dropdown">
@@ -85,7 +93,7 @@ const Comments = ({ show, handleClose, addComment, post }) => {
                                     </span>
                                     </li>
                                     <li>
-                                    <span className="dropdown-item" onClick={""}>
+                                    <span className="dropdown-item" onClick={() => handleDeleteComment(index)}>
                                         <i className="bi bi-trash"></i> Delete Comment
                                     </span>
                                     </li>
@@ -95,8 +103,6 @@ const Comments = ({ show, handleClose, addComment, post }) => {
                         )}
                         </li>
                         ))}
-
-                        {/* {comment}  */}
 
                 </ul>
                 {/* Section for adding new comments */}

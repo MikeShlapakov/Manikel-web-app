@@ -27,7 +27,6 @@ function LoginPage() {
     e.preventDefault();
 
       // Check if the new user already exists
-    // const isUserExists = users.some((u) => (u.username === user.username & u.password === user.password)); 
     const isAuthenticated = login(user.username, user.password);
   
     if (isAuthenticated) {
@@ -36,18 +35,13 @@ function LoginPage() {
     } else {
       // Handle failed login, such as displaying an error message
       if (user.username === '' || user.password === ''){
-        setAlert(<Alert  message="Please fill out all fields." type="warning" onClose={handleAlertClose}/>);
+        setAlert(<Alert  message="Please fill out all fields." type="warning"/>);
       }
       else{
-        setAlert(<Alert  message="User not found! Please check username and password." type="error" onClose={handleAlertClose}/>);
+        setAlert(<Alert  message="User not found! Please check username and password." type="error"/>);
       }
     }
   };
-
-  const handleAlertClose = () => {
-    setAlert(null);
-  };
-
 
   return (
     <div className="container mt-5">
@@ -62,14 +56,14 @@ function LoginPage() {
                   <label className="text-center">Login</label>
                 </div>
             <form onSubmit={handleSubmit}>
-            <div className="d-grid gap-2 col-10 mx-auto mb-3">
-                <input type="text" className="form-control" id="username" onChange={handleChange} required placeholder="Username" />
+              <div className="d-grid gap-2 col-10 mx-auto mb-3">
+                <input type="text" className="form-control" id="username" title="username" onChange={handleChange} required placeholder="Username" />
               </div>
               <div className="d-grid gap-2 col-10 mx-auto mb-3">
-                <input type="password" className="form-control" id="password" onChange={handleChange} required placeholder="Password" />
+                <input type="password" className="form-control" id="password" title="password" onChange={handleChange} required placeholder="Password" />
               </div>
               <div className="d-grid gap-2 col-7 mx-auto mb-3">
-                <button type="submit" className="btn btn-primary">Login</button>
+                <button type="submit" className="btn btn-primary" title="Login-btn">Login</button>
               </div>
               {alert} 
               <div className="mt-3 text-center">

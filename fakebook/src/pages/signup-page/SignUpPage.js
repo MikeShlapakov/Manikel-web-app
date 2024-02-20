@@ -15,45 +15,71 @@ const SignUpPage = () => {
     nickname: '',
     password: '',
     confirmPassword: '',
-    profilePicture: null,
+    profilePicture: '',
   });
+
+  const [strengthMessage, setStrengthMessage] = useState('');
 
   const handleChange = (e) => {
     const { id, value, type } = e.target;
-
+    if (id === 'password'){
+      // Check password strength and set message accordingly
+      if (isStrongPassword(value)) {
+        setStrengthMessage('Strong Password!');
+      } else {
+        setStrengthMessage('Password should have at least 8 characters. Including letters, numbers, and special characters.');
+      }
+    }
     setUser((prevData) => ({
       ...prevData,
-      [id]: type === 'file' ? e.target.files[0] : value,
+      [id]: type === 'file' ? e.target.files[0].name : value,
     }));
+  };
+
+  const isStrongPassword = (password) => {
+    // Check if password has at least 8 characters
+    if (password.length < 8) {
+      return false;
+    }
+
+    // Check if password contains at least one letter, one number, and one special character
+    const hasLetter = /[a-zA-Z]/.test(password);
+    const hasNumber = /\d/.test(password);
+    const hasSpecialCharacter = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+    // Return true if all conditions are met
+    return hasLetter && hasNumber && hasSpecialCharacter;
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-      // Check if the new user already exists
+    // Check if the new user already exists
     const isUserExists = users.some((u) => u.username === user.username);
 
     if (isUserExists) {
-      setAlert(<Alert  message="User already exists! Please choose a different username." type="error" onClose={handleAlertClose}/>);
+      setAlert(<Alert  message="User already exists! Please choose a different username." type="error"/>);
+    }
+    else if (!isStrongPassword(user.password)){
+      setAlert(<Alert  message="You must choose a strong password." type="error"/>);
+    }
+    else if (user.password !== user.confirmPassword){
+      setAlert(<Alert  message="Please make sure that the confirmed password matches the written password." type="warning"/>);
     }
     else{
       const newUser= {
         id: Date.now(), // Use a unique identifier (e.g., timestamp) as an ID
         username: user.username,
         password: user.password,
-        nickname: user.nickname, // You might want to use a different field for the nickname
-        img: user.profilePicture, // Set a default image or provide a way to upload an image
+        nickname: user.nickname,
+        img: user.profilePicture,
       };
 
       setUsersList([...usersList, newUser]);
       navigate("/")
     }
   };
-
-  const handleAlertClose = () => {
-    setAlert(null);
-  };
-
+  
   return (
     <div className="container mt-5">
       <div className="row justify-content-center">
@@ -68,23 +94,24 @@ const SignUpPage = () => {
               </div>
               <form onSubmit={handleSubmit}>
                 <div className="mb-3">
-                  <input type="text" className="form-control" id="username" name="username" onChange={handleChange} required  placeholder="Username" />
+                  <input type="text" className="form-control" id="username" title="username" onChange={handleChange} required  placeholder="Username" />
                 </div>
                 <div className="mb-3">
-                  <input type="text" className="form-control" id="nickname" name="nickname" onChange={handleChange} required  placeholder="Nickname" />
+                  <input type="text" className="form-control" id="nickname" title="nickname" onChange={handleChange} required  placeholder="Nickname" />
                 </div>
                 <div className="mb-3">
-                  <input type="password" className="form-control" id="password" name="password" onChange={handleChange} required  placeholder="Password" />
+                  <input type="password" className="form-control" id="password" title="password" onChange={handleChange} required  placeholder="Password" />
+                  <p className={strengthMessage==="Strong Password!"? "text-success p-2": "text-danger p-2"}>{strengthMessage}</p>
                 </div>
                 <div className="mb-3">
-                  <input type="password" className="form-control" id="confirmPassword" name="confirmPassword" onChange={handleChange} required  placeholder="Confirm Password"  />
+                  <input type="password" className="form-control" id="confirmPassword" title="confirm" onChange={handleChange} required  placeholder="Confirm Password"  />
                 </div>
                 <div className="mb-3">
                   <label htmlFor="profilePicture" className="form-label">Profile Picture</label>
-                  <input type="file" className="form-control" id="profilePicture" name="profilePicture" accept="image/*" required onChange={handleChange} />
+                  <input type="file" className="form-control" id="profilePicture" title="Picture" accept="image/*" required onChange={handleChange} />
                 </div>
                 <div className="d-grid gap-2 col-7 mx-auto mb-3">
-                  <button type="submit" className="btn btn-primary">Sign Up</button>
+                  <button type="submit" className="btn btn-primary" title="SignUp-btn">Sign Up</button>
                 </div>
                 {alert}
                 <div className="mt-3 text-center">

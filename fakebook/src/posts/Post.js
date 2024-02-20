@@ -47,7 +47,7 @@ const Post = ({ post, postsList, setPostsList, setEditPost, setShowCommentsModal
                       </span>
                       </li>
                       <li>
-                      <span className="dropdown-item" onClick={handleDeletePost}>
+                      <span title="delete btn" className="dropdown-item" onClick={handleDeletePost}>
                           <i className="bi bi-trash"></i> Delete Post
                       </span>
                       </li>
