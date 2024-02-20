@@ -1,12 +1,11 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import users from "../../data/users.json"
 import Alert from "../../alerts/Alert"
 
-const SignUpPage = () => {
-  const navigate = useNavigate(); 
+const SignUpPage = (usersList, setUsersList) => {
+  // console.log(usersList)
 
-  const [usersList, setUsersList] = useState(users)
+  const navigate = useNavigate(); 
 
   const [alert, setAlert] = useState(null); // State to control alert
 
@@ -55,7 +54,7 @@ const SignUpPage = () => {
     e.preventDefault();
 
     // Check if the new user already exists
-    const isUserExists = users.some((u) => u.username === user.username);
+    const isUserExists = usersList.usersList.some((u) => u.username === user.username);
 
     if (isUserExists) {
       setAlert(<Alert  message="User already exists! Please choose a different username." type="error"/>);
@@ -78,7 +77,7 @@ const SignUpPage = () => {
       img: user.profilePicture,
     };
 
-    setUsersList([...usersList, newUser]);
+    usersList.setUsersList([...usersList.usersList, newUser]);
     navigate("/")
     
   };

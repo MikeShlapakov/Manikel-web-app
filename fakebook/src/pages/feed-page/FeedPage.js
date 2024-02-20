@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import { getLoggedInUser, logout } from '../../Authentication';
-import users from '../../data/users';
 import Post from '../../posts/Post';
 import posts from '../../data/posts.json'
 import Comments from '../../posts/Comments';
 import { format } from 'date-fns'
 
-function FeedPage() {
+function FeedPage(usersList) {
+  // console.log(usersList)
   const navigate = useNavigate(); 
 
   const [user, setUser] = useState(null);
+  // console.log(user)
 
   useEffect(() => {
     const loggedInUser = getLoggedInUser();
@@ -18,7 +19,7 @@ function FeedPage() {
       navigate("/");
       return;
     }
-    setUser(users.find((user) => user.username === loggedInUser.loggedInUser));
+    setUser(usersList.usersList.find((user) => user.username === loggedInUser.loggedInUser));
   }, [navigate]);
 
   const [postsList, setPostsList] = useState(posts);
@@ -73,12 +74,12 @@ function FeedPage() {
       }
     return false;
   };
+
   const handleAddPost = (e) => {
     e.preventDefault();
-    if(checkEmptyPost){
+    if(checkEmptyPost()){
       return;
     }
-
     const newPost= {
       id: Date.now(), // Use a unique identifier (e.g., timestamp) as an ID
       title: addPost.title,
@@ -90,7 +91,8 @@ function FeedPage() {
       comments: [], // Set a default image or provide a way to upload an image
       likes: 0, // Set a default image or provide a way to upload an image
     };
-  
+    
+    console.log(newPost)
     setPostsList([...postsList, newPost]);
     // console.log(posts)
   };
@@ -107,8 +109,8 @@ function FeedPage() {
       content: addPost.content,
       img: addPost.picture
     };
-
-    console.log(editedPost);
+    // console.log(editPost);
+    
     // Save the modified post to the state
     setPostsList(postsList.map((p) => (p.id === editedPost.id ? editedPost : p)));
 

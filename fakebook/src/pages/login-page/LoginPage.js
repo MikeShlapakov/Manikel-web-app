@@ -3,10 +3,9 @@ import {Link, useNavigate} from 'react-router-dom';
 import Alert from "../../alerts/Alert";
 import { login } from '../../Authentication';
 
-function LoginPage() {
-  const navigate = useNavigate(); // Use useNavigate hook
+function LoginPage(usersList) {
 
-  // const [usersList, setUsersList] = useState(users) 
+  const navigate = useNavigate(); // Use useNavigate hook
 
   const [alert, setAlert] = useState(null); // State to control alert
 
@@ -26,20 +25,20 @@ function LoginPage() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-      // Check if the new user already exists
-    const isAuthenticated = login(user.username, user.password);
-  
+    const isAuthenticated = login(usersList, user.username, user.password);
+    
+    // Check if the new user already exists
     if (isAuthenticated) {
       // Handle successful login, such as redirecting to another page
       navigate("/feed")
-    } else {
-      // Handle failed login, such as displaying an error message
-      if (user.username === '' || user.password === ''){
-        setAlert(<Alert  message="Please fill out all fields." type="warning"/>);
-      }
-      else{
-        setAlert(<Alert  message="User not found! Please check username and password." type="error"/>);
-      }
+      return;
+    } 
+    // Handle failed login, such as displaying an error message
+    if (user.username === '' || user.password === ''){
+      setAlert(<Alert  message="Please fill out all fields." type="warning"/>);
+    }
+    else{
+      setAlert(<Alert  message="User not found! Please check username and password." type="error"/>);
     }
   };
 

@@ -4,24 +4,21 @@ import {
   Routes,
   Route,
 } from 'react-router-dom';
-
+import { useState } from "react";
+import users from './data/users';
 import LoginPage from './pages/login-page/LoginPage';
 import FeedPage from './pages/feed-page/FeedPage';
 import SignUpPage from './pages/signup-page/SignUpPage';
 
-
-// function renderswitch(currSite) {
-  
-// }
-
 function App() {
+  const [usersList, setUsersList] = useState(users);
+
   return (
-    // <Alert/>
     <Router>
       <Routes>
-        <Route path="/" element={<LoginPage />} />
-        <Route path="/signup" element={<SignUpPage />} />
-        <Route path="/feed" element={<FeedPage />} />
+        <Route path="/" element={<LoginPage usersList={usersList}/>} />
+        <Route path="/signup" element={<SignUpPage usersList={usersList} setUsersList={setUsersList}/>} />
+        <Route path="/feed" element={<FeedPage usersList={usersList}/>} />
       </Routes>
     </Router>
   );
