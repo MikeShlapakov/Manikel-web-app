@@ -20,6 +20,21 @@ const SignUpPage = () => {
 
   const [strengthMessage, setStrengthMessage] = useState('');
 
+  const isStrongPassword = (password) => {
+    // Check if password has at least 8 characters
+    if (password.length < 8) {
+      return false;
+    }
+
+    // Check if password contains at least one letter, one number, and one special character
+    const hasLetter = /[a-zA-Z]/.test(password);
+    const hasNumber = /\d/.test(password);
+    const hasSpecialCharacter = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+    // Return true if all conditions are met
+    return hasLetter && hasNumber && hasSpecialCharacter;
+  };
+
   const handleChange = (e) => {
     const { id, value, type } = e.target;
     if (id === 'password'){
@@ -36,21 +51,6 @@ const SignUpPage = () => {
     }));
   };
 
-  const isStrongPassword = (password) => {
-    // Check if password has at least 8 characters
-    if (password.length < 8) {
-      return false;
-    }
-
-    // Check if password contains at least one letter, one number, and one special character
-    const hasLetter = /[a-zA-Z]/.test(password);
-    const hasNumber = /\d/.test(password);
-    const hasSpecialCharacter = /[!@#$%^&*(),.?":{}|<>]/.test(password);
-
-    // Return true if all conditions are met
-    return hasLetter && hasNumber && hasSpecialCharacter;
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -59,25 +59,28 @@ const SignUpPage = () => {
 
     if (isUserExists) {
       setAlert(<Alert  message="User already exists! Please choose a different username." type="error"/>);
+      return;
     }
-    else if (!isStrongPassword(user.password)){
+    if (!isStrongPassword(user.password)){
       setAlert(<Alert  message="You must choose a strong password." type="error"/>);
+      return;
     }
-    else if (user.password !== user.confirmPassword){
+    if (user.password !== user.confirmPassword){
       setAlert(<Alert  message="Please make sure that the confirmed password matches the written password." type="warning"/>);
+      return;
     }
-    else{
-      const newUser= {
-        id: Date.now(), // Use a unique identifier (e.g., timestamp) as an ID
-        username: user.username,
-        password: user.password,
-        nickname: user.nickname,
-        img: user.profilePicture,
-      };
 
-      setUsersList([...usersList, newUser]);
-      navigate("/")
-    }
+    const newUser= {
+      id: Date.now(), // Use a unique identifier (e.g., timestamp) as an ID
+      username: user.username,
+      password: user.password,
+      nickname: user.nickname,
+      img: user.profilePicture,
+    };
+
+    setUsersList([...usersList, newUser]);
+    navigate("/")
+    
   };
   
   return (

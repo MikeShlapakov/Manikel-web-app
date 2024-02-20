@@ -12,7 +12,8 @@ const Comments = ({ show, handleClose, addComment,deleteComment, post }) => {
     const [editingCommentIndex, setEditingCommentIndex] = useState(-1);
   
     const handleAddComment = () => {
-
+        if (newComment === ''){
+            return;}
         if (editingCommentIndex !== -1) {
             // If an edit is in progress, update the existing comment
             const updatedComments = [...existingComments];
@@ -20,11 +21,11 @@ const Comments = ({ show, handleClose, addComment,deleteComment, post }) => {
             setNewComment('');
             setEditingCommentIndex(-1);
             addComment(post, updatedComments);
-        } else {
+            return;
+        } 
         // Add a new comment
-            addComment(post, [...existingComments, newComment]);
-            setNewComment('');
-        }
+        addComment(post, [...existingComments, newComment]);
+        setNewComment('');
     };
 
     const handleEditComment = (index) => {

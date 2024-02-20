@@ -16,10 +16,9 @@ function FeedPage() {
     const loggedInUser = getLoggedInUser();
     if (!loggedInUser) {
       navigate("/");
+      return;
     }
-    else{
-      setUser(users.find((user) => user.username === loggedInUser.loggedInUser));
-    }
+    setUser(users.find((user) => user.username === loggedInUser.loggedInUser));
   }, [navigate]);
 
   const [postsList, setPostsList] = useState(posts);
@@ -66,8 +65,19 @@ function FeedPage() {
     }));
   };
 
+  const checkEmptyPost = () => {
+    if(addPost.title === '' ||
+      addPost.content === '' ||
+      addPost.picture === null){
+        return true;
+      }
+    return false;
+  };
   const handleAddPost = (e) => {
     e.preventDefault();
+    if(checkEmptyPost){
+      return;
+    }
 
     const newPost= {
       id: Date.now(), // Use a unique identifier (e.g., timestamp) as an ID
@@ -176,7 +186,7 @@ function FeedPage() {
             </div>
             <div className="modal-footer">
               <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cencel</button>
-              <button type="button" className="btn btn-primary" title="confirmAdd" onClick={handleAddPost}>Add Post</button>
+              <button type="button" className="btn btn-primary"  data-bs-dismiss="modal" title="confirmAdd" onClick={handleAddPost}>Add Post</button>
             </div>
           </div>
         </div>
