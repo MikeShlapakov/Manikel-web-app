@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React from "react";
 import { useNavigate, Link } from "react-router-dom";
 import Alert from "../../alerts/Alert"
 
@@ -7,17 +7,9 @@ const SignUpPage = (usersList, setUsersList) => {
 
   const navigate = useNavigate(); 
 
-  const [alert, setAlert] = useState(null); // State to control alert
+  const [alert, setAlert] = React.useState(null); // State to control alert
 
-  const [user, setUser] = useState({
-    username: '',
-    nickname: '',
-    password: '',
-    confirmPassword: '',
-    profilePicture: '',
-  });
-
-  const [strengthMessage, setStrengthMessage] = useState('');
+  const [strengthMessage, setStrengthMessage] = React.useState('');
 
   const isStrongPassword = (password) => {
     // Check if password has at least 8 characters
@@ -33,9 +25,18 @@ const SignUpPage = (usersList, setUsersList) => {
     // Return true if all conditions are met
     return hasLetter && hasNumber && hasSpecialCharacter;
   };
+  
+  const [user, setUser] = React.useState({
+    username: '',
+    nickname: '',
+    password: '',
+    confirmPassword: '',
+    profilePicture: '',
+  });
 
   const handleChange = (e) => {
     const { id, value, type } = e.target;
+    console.log([ id, value, type ])
     if (id === 'password'){
       // Check password strength and set message accordingly
       if (isStrongPassword(value)) {
@@ -48,6 +49,7 @@ const SignUpPage = (usersList, setUsersList) => {
       ...prevData,
       [id]: type === 'file' ? e.target.files[0].name : value,
     }));
+    console.log(user);
   };
 
   const handleSubmit = (e) => {

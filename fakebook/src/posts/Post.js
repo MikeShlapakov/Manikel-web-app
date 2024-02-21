@@ -1,9 +1,10 @@
+import { set } from 'date-fns';
 import React, { useState } from 'react';
 // import posts from '../data/posts.json'
 
 const Post = ({ post, postsList, setPostsList, setEditPost, setShowCommentsModal, setPostComments}) => {
 
-  // const [postsList, setPostsList] = useState(posts);
+  const [liked, setLiked] = useState(false);
 
   const handleEditPost = () => {
     setEditPost(post)
@@ -26,14 +27,15 @@ const Post = ({ post, postsList, setPostsList, setEditPost, setShowCommentsModal
   const handleLike = () => {
     const updateLikes = {
       ...post,
-      likes: post.likes+1
+      likes: post.likes+(liked? -1:1)
     }
+    setLiked(!liked)
     setPostsList(postsList.map((p) => (p.id === updateLikes.id ? updateLikes : p)))
     // Implement logic to handle liking a post
   };
 
   return (
-    <div className="card" style={{ width: '400px', height: '500px' }}>
+    <div className="card" style={{ width: '380px', height: '500px' }}>
       <nav className="navbar navbar-expand-lg bg-body-tertiary flex-column">
         <div className="container-fluid">
           <div className="title me-2">{post.author}</div>     
@@ -57,14 +59,14 @@ const Post = ({ post, postsList, setPostsList, setEditPost, setShowCommentsModal
       </nav>
             
       <div className="card-body">
-        <img src={post.img} className="card-img-top" />
+        <img src={post.img} className="card-img-top" style={{ width: '350px', height: '225px' }}/>
         <h5 className="card-title">{post.title}</h5>
         <p className="card-text">{post.content}</p>
         <div className="grid gap-3">
           <button className="btn btn-outline-info me-2" onClick={handleAddComment}>
             <i className="fa fa-comments"></i> Comments ({post.comments.length})
           </button>
-          <button className="btn btn-outline-success me-2" onClick={handleLike}>
+          <button className={`btn ${liked ? "btn-success":"btn-outline-success"} me-2`} onClick={handleLike}>
             <i className="fa fa-thumbs-up"></i> ({post.likes})
           </button>
           <div className="btn btn-outline-warning me-2"  data-bs-toggle="dropdown">

@@ -10,7 +10,7 @@ function FeedPage(usersList) {
   // console.log(usersList)
   const navigate = useNavigate(); 
 
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState({ id: 1, username:"mike",password:"123",nickname:"mike", img: "img12.jpg"});
   // console.log(user)
 
   useEffect(() => {
@@ -31,7 +31,7 @@ function FeedPage(usersList) {
   const [addPost, setNewPost] = useState({
     title: '',
     content: '',
-    picture: null,
+    picture: null
   });
 
   const [showCommentsModal, setShowCommentsModal] = useState(false);
@@ -87,19 +87,19 @@ function FeedPage(usersList) {
       img: addPost.picture,
       author: user.nickname,
       profile: user.img,
-      date:format(Date.now(), "dd-MM-yyyy"),
+      date:format(Date.now(), "dd/MM/yyyy"),
       comments: [], // Set a default image or provide a way to upload an image
       likes: 0, // Set a default image or provide a way to upload an image
     };
     
-    console.log(newPost)
+    // console.log(newPost)
     setPostsList([...postsList, newPost]);
     // console.log(posts)
+    setNewPost({title: '', content: '', picture: null})
   };
 
   const handleEditPost = (e) => {
     e.preventDefault();
-
     // Update the state with the modified post
     // console.log(editPost);
 
@@ -110,7 +110,7 @@ function FeedPage(usersList) {
       img: addPost.picture
     };
     // console.log(editPost);
-    
+
     // Save the modified post to the state
     setPostsList(postsList.map((p) => (p.id === editedPost.id ? editedPost : p)));
 
@@ -174,15 +174,15 @@ function FeedPage(usersList) {
               <form>
                 <div className="mb-3">
                   <label className="col-form-label">Title:</label>
-                  <input type="text" className="form-control" id="title" title="title" onChange={handleChange}></input>
+                  <input type="text" className="form-control" id="title" title="title" onChange={handleChange} required></input>
                 </div>
                 <div className="mb-3">
                   <label className="col-form-label">Message:</label>
-                  <textarea className="form-control" id="content" title="content" onChange={handleChange}></textarea>
+                  <textarea className="form-control" id="content" title="content" onChange={handleChange} required></textarea>
                 </div>
                 <div className="mb-3">
                   <label className="form-label">Add Picture:</label>
-                  <input type="file" className="form-control" id="picture" title="picture" accept="image/*" onChange={handleChange} />
+                  <input type="file" className="form-control" id="picture" title="picture" accept="image/*" onChange={handleChange} required/>
                 </div>
               </form>
             </div>
@@ -205,15 +205,15 @@ function FeedPage(usersList) {
               <form>
                 <div className="mb-3">
                   <label className="col-form-label">Title:</label>
-                  <input type="text" className="form-control" id="title" onChange={handleChange}></input>
+                  <input type="text" className="form-control" id="title" onChange={handleChange} required></input>
                 </div>
                 <div className="mb-3">
                   <label className="col-form-label">Message:</label>
-                  <textarea className="form-control" id="content" onChange={handleChange}></textarea>
+                  <textarea className="form-control" id="content" onChange={handleChange} required></textarea>
                 </div>
                 <div className="mb-3">
                   <label className="form-label">Add Picture:</label>
-                  <input type="file" className="form-control" id="picture" name="profilePicture" accept="image/*" onChange={handleChange} />
+                  <input type="file" className="form-control" id="picture" name="profilePicture" accept="image/*" required onChange={handleChange}  />
                 </div>
               </form>
             </div>
@@ -241,7 +241,7 @@ function FeedPage(usersList) {
       <div className='container'> 
       <nav title="menu" className="navbar navbar-expand-lg justify-content-between bg-body-tertiary p-2">
         <div className="container-fluid">
-          <div className="navbar-brand">Menu</div>
+          <div className="navbar-brand">{user.nickname}<img src={user.img} className="card-img-top m-2" style={{ width: '50px', height: '50px' }} /></div>
           <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="true">
             <span className="navbar-toggler-icon"></span>
           </button>

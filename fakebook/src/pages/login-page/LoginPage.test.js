@@ -1,16 +1,17 @@
 import { render, screen, fireEvent } from '@testing-library/react';
+import usersList from '../../data/users.json';
 import LoginPage from './LoginPage';
 import {BrowserRouter as Router} from 'react-router-dom';
 
 test('check components of login page', () => {
-    render(<Router> <LoginPage /> </Router>);
+    render(<Router> <LoginPage usersList={usersList} /> </Router>);
     expect(screen.getByTitle(/Username/i)).toBeInTheDocument();
     expect(screen.getByTitle(/Password/i)).toBeInTheDocument();
     expect(screen.getByTitle(/Login-btn/i)).toBeInTheDocument();
 });
 
 test('displays error message when user not found', () => {
-  render(<Router> <LoginPage /> </Router>);
+  render(<Router> <LoginPage usersList={usersList} /> </Router>);
   const usernameInput = screen.getByTitle(/username/i);
   const passwordInput = screen.getByTitle(/password/i);
   const loginBtn = screen.getByRole('button', { name: /login/i });
@@ -28,7 +29,7 @@ test('displays error message when user not found', () => {
 });
 
 test('displays warrning message when no input was given', () => {
-  render(<Router> <LoginPage /> </Router>);
+  render(<Router> <LoginPage usersList={usersList} /> </Router>);
   const usernameInput = screen.getByTitle(/username/i);
   const passwordInput = screen.getByTitle(/password/i);
   const loginBtn = screen.getByRole('button', { name: /login/i });

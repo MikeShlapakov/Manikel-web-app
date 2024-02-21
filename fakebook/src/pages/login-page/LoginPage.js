@@ -49,11 +49,11 @@ function LoginPage(usersList) {
         <div className="card">
           <div className="card-header">
             <h2 className="text-primary text-center">Fakebook</h2>
-          </div>
-          <div className="card-body">
-          <div className="d-grid mb-3">
-                  <label className="text-center">Login</label>
-                </div>
+            </div>
+            <div className="card-body">
+            <div className="d-grid mb-3">
+              <label className="text-center">Login</label>
+            </div>
             <form onSubmit={handleSubmit}>
               <div className="d-grid gap-2 col-10 mx-auto mb-3">
                 <input type="text" className="form-control" id="username" title="username" onChange={handleChange} required placeholder="Username" />

@@ -1,11 +1,12 @@
 import { render, screen, fireEvent } from '@testing-library/react';
+import usersList from '../../data/users.json';
 import FeedPage from './FeedPage';
 import {BrowserRouter as Router} from 'react-router-dom';
 import { login } from '../../Authentication';
 
 
 test('check components of feed page', () => {
-  render(<Router> <FeedPage /> </Router>);
+  render(<Router> <FeedPage usersList={usersList} /> </Router>);
   expect(screen.getAllByTitle(/Post/i).length).toBeGreaterThan(0);
   expect(screen.getAllByTitle(/Menu/i)).toHaveLength(2);
   expect(screen.getAllByTitle(/Search/i)).toHaveLength(4);
@@ -15,8 +16,8 @@ test('check components of feed page', () => {
 });
 
 test('check if added new post', () => {
-  login("mike", "123")
-  render(<Router> <FeedPage /> </Router>);
+  login({usersList}, "mike", "123")
+  render(<Router> <FeedPage usersList={usersList} /> </Router>);
 
   const postsLength = screen.getAllByTitle(/post/i).length
 
@@ -41,8 +42,8 @@ test('check if added new post', () => {
 });
 
 test('check if deleted first post', () => {
-  login("mike", "123")
-  render(<Router> <FeedPage /> </Router>);
+  login({usersList}, "mike", "123")
+  render(<Router> <FeedPage usersList={usersList} /> </Router>);
 
   const postsLength = screen.getAllByTitle(/post/i).length
 
