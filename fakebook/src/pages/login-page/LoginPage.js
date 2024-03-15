@@ -1,9 +1,12 @@
 import { useState } from "react";
 import {Link, useNavigate} from 'react-router-dom';
 import Alert from "../../alerts/Alert";
-import { login } from '../../Authentication';
+import { createToken, login, getUserByUsername } from '../../Authentication';
 
-function LoginPage(usersList) {
+function LoginPage({token, setToken}) {
+
+  // console.log(token);
+  // console.log(setToken);
 
   const navigate = useNavigate(); // Use useNavigate hook
 
@@ -22,24 +25,37 @@ function LoginPage(usersList) {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const isAuthenticated = login(usersList, user.username, user.password);
-    
-    // Check if the new user already exists
-    if (isAuthenticated) {
-      // Handle successful login, such as redirecting to another page
-      navigate("/feed")
-      return;
-    } 
     // Handle failed login, such as displaying an error message
     if (user.username === '' || user.password === ''){
       setAlert(<Alert  message="Please fill out all fields." type="warning"/>);
+      return;
     }
-    else{
+
+    const isAuthenticated = await login(user.username, user.password);
+
+    // console.log(isAuthenticated);
+
+    // Check if the new user already exists
+    if (!isAuthenticated){
       setAlert(<Alert  message="User not found! Please check username and password." type="error"/>);
+      return;
     }
+    
+    const u = await getUserByUsername(user.username);
+    if (!u) {
+      setAlert(<Alert  message="User not found! Please check username and password." type="error"/>);
+      return;
+    }
+
+    const token = await createToken(u._id);
+    // Handle successful login, such as redirecting to another page
+    setToken(token)
+    console.log(token)
+    // navigate("/feed")
+    return;
   };
 
   return (

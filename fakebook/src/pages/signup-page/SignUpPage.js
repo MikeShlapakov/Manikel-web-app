@@ -1,8 +1,11 @@
 import React from "react";
 import { useNavigate, Link } from "react-router-dom";
 import Alert from "../../alerts/Alert"
+import { getUserByUsername } from '../../Authentication';
 
-const SignUpPage = (usersList, setUsersList) => {
+const SignUpPage = () => {
+  const serverUrl = 'http://localhost:8080';
+
   // console.log(usersList)
 
   const navigate = useNavigate(); 
@@ -36,7 +39,7 @@ const SignUpPage = (usersList, setUsersList) => {
 
   const handleChange = (e) => {
     const { id, value, type } = e.target;
-    console.log([ id, value, type ])
+    // console.log([ id, value, type ])
     if (id === 'password'){
       // Check password strength and set message accordingly
       if (isStrongPassword(value)) {
@@ -49,14 +52,15 @@ const SignUpPage = (usersList, setUsersList) => {
       ...prevData,
       [id]: type === 'file' ? e.target.files[0].name : value,
     }));
-    console.log(user);
+    // console.log(user);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Check if the new user already exists
-    const isUserExists = usersList.usersList.some((u) => u.username === user.username);
+
+    const isUserExists = await getUserByUsername(user.username);
 
     if (isUserExists) {
       setAlert(<Alert  message="User already exists! Please choose a different username." type="error"/>);
@@ -71,19 +75,27 @@ const SignUpPage = (usersList, setUsersList) => {
       return;
     }
 
-    const newUser= {
-      id: Date.now(), // Use a unique identifier (e.g., timestamp) as an ID
-      username: user.username,
-      password: user.password,
-      nickname: user.nickname,
-      img: user.profilePicture,
-    };
+    createUser();
 
-    usersList.setUsersList([...usersList.usersList, newUser]);
     navigate("/")
     
   };
   
+  async function createUser() {
+    await fetch(`${serverUrl}/api/users`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            displayName: user.nickname,
+            username: user.username,
+            password: user.password,
+            pfp: user.profilePicture
+        })
+    }).then(data => console.log(data.json()))
+  }
+
   return (
     <div className="container mt-5">
       <div className="row justify-content-center">

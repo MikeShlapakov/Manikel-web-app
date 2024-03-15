@@ -1,4 +1,4 @@
-import { set } from 'date-fns';
+import { format } from 'date-fns'
 import React, { useState } from 'react';
 // import posts from '../data/posts.json'
 
@@ -35,7 +35,7 @@ const Post = ({ post, postsList, setPostsList, setEditPost, setShowCommentsModal
   };
 
   return (
-    <div className="card" style={{ width: '380px', height: '500px' }}>
+    <div className="card" style={{ minWidth: '490px', height: '600px' }}>
       <nav className="navbar navbar-expand-lg bg-body-tertiary flex-column">
         <div className="container-fluid">
           <div className="title me-2">{post.author}</div>     
@@ -59,10 +59,10 @@ const Post = ({ post, postsList, setPostsList, setEditPost, setShowCommentsModal
       </nav>
             
       <div className="card-body">
-        <img src={post.img} className="card-img-top" style={{ width: '350px', height: '225px' }}/>
+        <img src={post.img} className="card-img m-3" style={{ width: '420px', height: '300px' }}/>
         <h5 className="card-title">{post.title}</h5>
-        <p className="card-text">{post.content}</p>
-        <div className="grid gap-3">
+        <p className="card-text" style={{ maxHeight: '60px', minHeight: '60px', overflow: 'auto' }}>{post.content}</p>
+        <div className="grid gap-2">
           <button className="btn btn-outline-info me-2" onClick={handleAddComment}>
             <i className="fa fa-comments"></i> Comments ({post.comments.length})
           </button>
@@ -95,7 +95,7 @@ const Post = ({ post, postsList, setPostsList, setEditPost, setShowCommentsModal
             </ul>
           </div>
         </div>
-        <p className="card-text">{post.date}</p> 
+        <p className="card-text pt-1">{format(post.date, "dd/MM/yyyy")}</p> 
         {/* Display comments here */}
       </div>
     </div>
