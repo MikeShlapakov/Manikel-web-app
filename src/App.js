@@ -44,16 +44,6 @@ function App() {
         // console.log(users)
     }
 
-    async function acceptFriendRequest() {
-        const users = await fetch('http://localhost:8080/api/users/' + document.getElementById('accept1').value + '/friends/' + document.getElementById('accept2').value, {
-            method: "PATCH",
-            headers: {
-                "Content-Type": "application/json",
-            },
-        }).then(data => data.json());
-        // console.log(users)
-    }
-
   // console.log(usersList[0])
   // console.log(postsList)
   return (
