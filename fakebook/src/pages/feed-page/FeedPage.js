@@ -1,35 +1,70 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from "react-router-dom";
-import { getLoggedInUser, logout } from '../../Authentication';
+import { useNavigate, useLocation } from 'react-router-dom';
+import {getLoggedInUser, logout, isLoggedIn, getUserByID} from '../../Authentication';
 import Post from '../../posts/Post';
-import posts from '../../data/posts.json'
+// import posts from '../../data/posts.json';
 import Comments from '../../posts/Comments';
-import { format } from 'date-fns'
 
-function FeedPage(usersList) {
-  // console.log(usersList)
+function FeedPage({token}) {
+  // console.log(token, userId)
   const navigate = useNavigate(); 
 
-  const [user, setUser] = useState({ id: 1, username:"mike",password:"123",nickname:"mike", img: "img12.jpg"});
-  // console.log(user)
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const userId = queryParams.get('userId');
+
+  // console.log("FEED:", token, userId)
+
+  const [user, setUser] = useState([]);
+
+  // const [user, setUser] = useState([]);
 
   useEffect(() => {
-    const loggedInUser = getLoggedInUser();
-    if (!loggedInUser) {
-      navigate("/");
-      return;
+    async function fetchData() {
+      const loggedIn = await isLoggedIn(token, userId);
+      if (loggedIn.error) {
+        console.log(loggedIn.error)
+        navigate("/");
+        return;
+      }
+      setUser(await getUserByID(userId));
+      console.log("HIiii", user)
     }
-    setUser(usersList.usersList.find((user) => user.username === loggedInUser.loggedInUser));
+    fetchData();
   }, [navigate]);
 
-  const [postsList, setPostsList] = useState(posts);
+  async function getAllPosts() {
+    const posts = await fetch('http://localhost:8080/api/posts', {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            'authorization': 'bearer ' + token
+        }
+    }).then(data => data.json())
+    console.log(posts);
+    return posts;
+  }
+
+  const [postsList, setPostsList] = useState([]);
   
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const posts = await getAllPosts();
+        setPostsList(posts);
+      } catch (error) {
+        console.error('Error fetching posts:', error);
+      }
+    };
+    fetchPosts();
+  }, []);
+
+
   const [darkTheme, setDarkTheme] = useState(false);
 
   const [editPost, setEditPost] = useState(null);
 
   const [addPost, setNewPost] = useState({
-    title: '',
     content: '',
     picture: null
   });
@@ -60,62 +95,96 @@ function FeedPage(usersList) {
 
   const handleChange = (e) => {
     const { id, value, type } = e.target;
-    setNewPost((prevData) => ({
-      ...prevData,
-      [id]: type === 'file' ? e.target.files[0].name : value,
-    }));
+    if (type === 'file') {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+  
+      reader.onloadend = () => {
+        setNewPost((prevData) => ({
+          ...prevData,
+          [id]: reader.result,
+        }));
+      };
+  
+      if (file) {
+        reader.readAsDataURL(file);
+      }
+    } else {
+      const { value } = e.target;
+      setNewPost((prevData) => ({
+        ...prevData,
+        [id]: value,
+      }));
+    }
   };
 
   const checkEmptyPost = () => {
-    if(addPost.title === '' ||
-      addPost.content === '' ||
+    if(addPost.content === '' ||
       addPost.picture === null){
         return true;
       }
     return false;
   };
 
-  const handleAddPost = (e) => {
+  const handleAddPost = async (e) => {
     e.preventDefault();
     if(checkEmptyPost()){
       return;
     }
-    const newPost= {
-      id: Date.now(), // Use a unique identifier (e.g., timestamp) as an ID
-      title: addPost.title,
-      content: addPost.content, // You might want to use a different field for the nickname
-      img: addPost.picture,
-      author: user.nickname,
-      profile: user.img,
-      date:format(Date.now(), "dd/MM/yyyy"),
-      comments: [], // Set a default image or provide a way to upload an image
-      likes: 0, // Set a default image or provide a way to upload an image
-    };
+
+    const newPost = await createPost()
+
+    console.log(newPost)
     
-    // console.log(newPost)
     setPostsList([...postsList, newPost]);
     // console.log(posts)
-    setNewPost({title: '', content: '', picture: null})
+    setNewPost({content: '', picture: null})
   };
 
-  const handleEditPost = (e) => {
+  // POSTS //
+  async function createPost() {
+    const post = await fetch('http://localhost:8080/api/users/'+ userId +'/posts', {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            'authorization': 'bearer ' + token
+        },
+        body: JSON.stringify({
+            content: addPost.content,
+            image: addPost.picture,
+            date: new Date()
+        })
+    }).then(data => data)
+    return post
+}
+
+  const handleEditPost = async (e) => {
     e.preventDefault();
-    // Update the state with the modified post
-    // console.log(editPost);
+    if(checkEmptyPost()){
+      return;
+    }
 
-    const editedPost = {
-      ...editPost,
-      title: addPost.title,
-      content: addPost.content,
-      img: addPost.picture
-    };
-    // console.log(editPost);
+    await edit();
 
-    // Save the modified post to the state
-    setPostsList(postsList.map((p) => (p.id === editedPost.id ? editedPost : p)));
+    setPostsList(await getAllPosts());
 
     setEditPost(null);
   };
+
+  async function edit() {
+    const posts = await fetch('http://localhost:8080/api/users/' + userId + '/posts/' + editPost._id, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+            'authorization': 'bearer ' + token
+        },
+        body: JSON.stringify({
+          content: addPost.content,
+          image: addPost.picture
+        })
+    }).then(data => data.json());
+    // console.log(posts)
+  }
 
   const backToLogin = () => {
     logout()
@@ -130,8 +199,13 @@ function FeedPage(usersList) {
     setEditPost(null);
   };
 
+  // const sortedPosts = posts.slice().sort((a, b) => {
+  //   return new Date(b.createdAt) - new Date(a.createdAt);
+  // });
+
   return (
-    <div className={`container-fluid pt-2 pb-4 ${darkTheme ? "container-dark bg-dark" : "bg-light"}`} data-bs-theme={darkTheme ? "dark" : "light"}>
+    <div className={`container-fluid p-2 ${darkTheme ? "container-dark bg-dark" : "bg-light"}`} data-bs-theme={darkTheme ? "dark" : "light"}>
+    {/* // <div className={`container-fluid`} style={{ backgroundColor: darkTheme ? 'gray' : 'lightblue'}}> */}
             {/* Offcanvas sidebar */}
       <div title="menu" className="offcanvas offcanvas-start" tabIndex="-1" id="offcanvas" aria-labelledby="offcanvasLabel">
         <div className="offcanvas-header">
@@ -173,10 +247,6 @@ function FeedPage(usersList) {
             <div className="modal-body">
               <form>
                 <div className="mb-3">
-                  <label className="col-form-label">Title:</label>
-                  <input type="text" className="form-control" id="title" title="title" onChange={handleChange} required></input>
-                </div>
-                <div className="mb-3">
                   <label className="col-form-label">Message:</label>
                   <textarea className="form-control" id="content" title="content" onChange={handleChange} required></textarea>
                 </div>
@@ -203,10 +273,6 @@ function FeedPage(usersList) {
             </div>
             <div className="modal-body">
               <form>
-                <div className="mb-3">
-                  <label className="col-form-label">Title:</label>
-                  <input type="text" className="form-control" id="title" onChange={handleChange} required></input>
-                </div>
                 <div className="mb-3">
                   <label className="col-form-label">Message:</label>
                   <textarea className="form-control" id="content" onChange={handleChange} required></textarea>
@@ -241,7 +307,7 @@ function FeedPage(usersList) {
       <div className='container'> 
       <nav title="menu" className="navbar navbar-expand-lg justify-content-between bg-body-tertiary p-2">
         <div className="container-fluid">
-          <div className="navbar-brand">{user.nickname}<img src={user.img} className="card-img-top m-2" style={{ width: '50px', height: '50px' }} /></div>
+          <div className="navbar-brand">{user.displayName}<img src={user.pfp} className="card-img-top m-2" style={{ width: '50px', height: '50px' }} /></div>
           <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="true">
             <span className="navbar-toggler-icon"></span>
           </button>
@@ -257,6 +323,28 @@ function FeedPage(usersList) {
                     {darkTheme ? 'Light Theme' : 'Dark Theme'}
                 </button>
               </li>
+              <li className="nav-item me-2">
+              <div className="dropdown ms-auto">
+                  <button class="btn btn-outline-info dropdown-toggle" data-bs-toggle="dropdown">Friend Requests</button>
+                  <ul className="dropdown-menu">
+                    {/* {console.log("Userrr", user)} */}
+                  {user ? (user.friendRequests.map((friend) => (
+                      <li>
+                      <span className="dropdown-item" onClick={null}>
+                      <h5>{friend} <button class="btn btn-outline-success btn-sm"><i className="bi bi-check-lg"/></button>
+                      <button class="btn btn-outline-danger btn-sm"><i className="bi bi-x-lg"/></button></h5>
+                      </span>
+                      </li>
+                      ))) : (<li>hi</li>)}
+                      {/* <li>
+                      <span className="dropdown-item" onClick={null}>
+                      <h5>friend <button class="btn btn-outline-success btn-sm"><i className="bi bi-check-lg"/></button>
+                      <button class="btn btn-outline-danger btn-sm"><i className="bi bi-x-lg"/></button></h5>
+                      </span>
+                      </li> */}
+                  </ul>
+              </div>
+              </li>
             </ul>
           </div>
         </div>
@@ -271,15 +359,28 @@ function FeedPage(usersList) {
         </div>
       </nav>
 
-      <div className="row justify-content-center pt-4">
-        {postsList.reverse().map((post) => (
-          <div title="post" key={post.id} className="col-md-4 mb-3">
-            <Post post={post} postsList={postsList} setPostsList={setPostsList} setEditPost={setEditPost} setShowCommentsModal={setShowCommentsModal} setPostComments={setPostComments}/>
+        {/* <div className="container-fluid" style={{ backgroundColor: 'lightblue', maxHeight: '50vh' }}> */}
+        <div className="row justify-content-center p-4">
+          <div className="col-md-5">
+            <div className="p-2 rounded" style={{ maxHeight: '90vh', overflow: 'auto' }}>
+          {/* <div className="row justify-content-center pt-4"> */}
+            {postsList.reverse().map((post) => (
+              <div title="post" key={post._id} className="col-md-4 mb-3">
+                <Post token={token} post={post} postsList={postsList} setPostsList={setPostsList} setEditPost={setEditPost} setShowCommentsModal={setShowCommentsModal} setPostComments={setPostComments}/>
+              </div>
+            ))}
+            </div>
+            <style>{`
+              ::-webkit-scrollbar {
+                display: none;
+              }
+            `}
+          </style>
           </div>
-        ))}
+        </div> 
       </div>
-      </div> 
     </div>
+
   );
 };
 

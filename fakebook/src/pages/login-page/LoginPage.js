@@ -3,7 +3,7 @@ import {Link, useNavigate} from 'react-router-dom';
 import Alert from "../../alerts/Alert";
 import { createToken, login, getUserByUsername } from '../../Authentication';
 
-function LoginPage({token, setToken}) {
+function LoginPage({token, setToken, setUserId}) {
 
   // console.log(token);
   // console.log(setToken);
@@ -53,8 +53,13 @@ function LoginPage({token, setToken}) {
     const token = await createToken(u._id);
     // Handle successful login, such as redirecting to another page
     setToken(token)
-    console.log(token)
-    // navigate("/feed")
+    setUserId(u._id)
+    console.log(token, u._id)
+
+    const queryParams = new URLSearchParams({
+      userId: encodeURIComponent(u._id),
+    });
+    navigate(`/feed?${queryParams.toString()}`);
     return;
   };
 

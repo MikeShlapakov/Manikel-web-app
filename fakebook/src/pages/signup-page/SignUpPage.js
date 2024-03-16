@@ -39,19 +39,40 @@ const SignUpPage = () => {
 
   const handleChange = (e) => {
     const { id, value, type } = e.target;
-    // console.log([ id, value, type ])
-    if (id === 'password'){
-      // Check password strength and set message accordingly
-      if (isStrongPassword(value)) {
-        setStrengthMessage('Strong Password!');
-      } else {
-        setStrengthMessage('Password should have at least 8 characters. Including letters, numbers, and special characters.');
+    if (type === 'file') {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+  
+      reader.onloadend = () => {
+        setUser((prevData) => ({
+          ...prevData,
+          [id]: reader.result,
+        }));
+      };
+  
+      if (file) {
+        reader.readAsDataURL(file);
       }
+    } else {
+      // console.log([ id, value, type ])
+      if (id === 'password'){
+        // Check password strength and set message accordingly
+        if (isStrongPassword(value)) {
+          setStrengthMessage('Strong Password!');
+        } else {
+          setStrengthMessage('Password should have at least 8 characters. Including letters, numbers, and special characters.');
+        }
+      }
+      // const { value } = e.target;
+      setUser((prevData) => ({
+        ...prevData,
+        [id]: value,
+      }));
     }
-    setUser((prevData) => ({
-      ...prevData,
-      [id]: type === 'file' ? e.target.files[0].name : value,
-    }));
+    // setUser((prevData) => ({
+    //   ...prevData,
+    //   [id]: type === 'file' ? e.target.files[0].name : value,
+    // }));
     // console.log(user);
   };
 
@@ -75,7 +96,7 @@ const SignUpPage = () => {
       return;
     }
 
-    createUser();
+    await createUser();
 
     navigate("/")
     

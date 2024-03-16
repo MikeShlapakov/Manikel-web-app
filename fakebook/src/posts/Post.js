@@ -1,8 +1,50 @@
 import { format } from 'date-fns'
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { getUserByID } from '../Authentication';
+// import {getAllPosts} from '../pages/feed-page/FeedPage.js';
 // import posts from '../data/posts.json'
 
-const Post = ({ post, postsList, setPostsList, setEditPost, setShowCommentsModal, setPostComments}) => {
+const Post = ({ token, post, postsList, setPostsList, setEditPost, setShowCommentsModal, setPostComments}) => {
+
+  const navigate = useNavigate(); 
+
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const userId = queryParams.get('userId');
+
+  // console.log("POST:", token, userId)
+  // const friendID = queryParams.get('friendId');
+
+  const [author, setAuthor] = useState([]);
+  
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        // console.log(post.authorId)
+        const author = await getUserByID(post.authorId);
+        // console.log(u)
+        setAuthor(author);
+      } catch (error) {
+        console.error('Error fetching posts:', error);
+      }
+    };
+
+    fetchPosts();
+  }, []);
+
+  async function getAllPosts() {
+    const posts = await fetch('http://localhost:8080/api/posts', {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            'authorization': 'bearer ' + token
+        }
+    }).then(data => data.json())
+  
+    console.log(posts);
+    return posts;
+  }
 
   const [liked, setLiked] = useState(false);
 
@@ -11,9 +53,21 @@ const Post = ({ post, postsList, setPostsList, setEditPost, setShowCommentsModal
     // setEditPostId(post)
   };
 
-  const handleDeletePost = () => {
-    setPostsList(postsList.filter((p) => p.id !== post.id))
+  const handleDeletePost = async () => {
+    await deletePost()
+    setPostsList(await getAllPosts());
   };
+  
+  async function deletePost() {
+    const posts = await fetch('http://localhost:8080/api/users/' + post.authorId + '/posts/' + post._id, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+            'authorization': 'bearer ' + token
+        },
+    }).then(data => data.json());
+    // console.log(posts)
+}
 
   const handleAddComment = () => {
     setPostComments(post)
@@ -34,12 +88,31 @@ const Post = ({ post, postsList, setPostsList, setEditPost, setShowCommentsModal
     // Implement logic to handle liking a post
   };
 
+  const handleClick = () => {
+    if (userId == author._id) return;
+    handleFriends();
+  };
+
+  const handleFriends = () => {
+    // console.log(friesdId)
+    const queryParams = new URLSearchParams({
+      userId: encodeURIComponent(userId),
+      friendId: encodeURIComponent(author._id),
+    });
+    navigate(`/friends?${queryParams.toString()}`);
+  };
+
   return (
     <div className="card" style={{ minWidth: '490px', height: '600px' }}>
       <nav className="navbar navbar-expand-lg bg-body-tertiary flex-column">
         <div className="container-fluid">
-          <div className="title me-2">{post.author}</div>     
-          <img src={post.profile} className="card-img-top" style={{ width: '50px', height: '50px' }}/>
+          <div className="title">
+            <span className="dropdown-item" onClick={handleClick}><h5>
+              <img src={author.pfp} className="card-img-top me-3" style={{ width: '50px', height: '50px' }}/>
+                {author.displayName}</h5>
+            </span>
+          </div>     
+          {setEditPost && (
           <div className="dropdown ms-auto">
                   <i className="bi bi-three-dots" data-bs-toggle="dropdown"></i>
                   <ul className="dropdown-menu">
@@ -55,11 +128,12 @@ const Post = ({ post, postsList, setPostsList, setEditPost, setShowCommentsModal
                       </li>
                   </ul>
           </div>
+          )}
         </div>
       </nav>
             
       <div className="card-body">
-        <img src={post.img} className="card-img m-3" style={{ width: '420px', height: '300px' }}/>
+        <img src={post.image} className="card-img m-3" style={{ width: '420px', height: '300px' }}/>
         <h5 className="card-title">{post.title}</h5>
         <p className="card-text" style={{ maxHeight: '60px', minHeight: '60px', overflow: 'auto' }}>{post.content}</p>
         <div className="grid gap-2">
