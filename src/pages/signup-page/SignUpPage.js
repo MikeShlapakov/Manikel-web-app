@@ -12,6 +12,14 @@ const SignUpPage = () => {
 
   const [alert, setAlert] = React.useState(null); // State to control alert
 
+  const showAlert = () => {
+    const modalElement = document.getElementById('alertModal');
+    if (!modalElement) return; // Check if modal element exists
+
+    const bootstrapModal = new window.bootstrap.Modal(modalElement);
+    bootstrapModal.show();
+  };
+
   const [strengthMessage, setStrengthMessage] = React.useState('');
 
   const isStrongPassword = (password) => {
@@ -69,11 +77,6 @@ const SignUpPage = () => {
         [id]: value,
       }));
     }
-    // setUser((prevData) => ({
-    //   ...prevData,
-    //   [id]: type === 'file' ? e.target.files[0].name : value,
-    // }));
-    // console.log(user);
   };
 
   const handleSubmit = async (e) => {
@@ -85,14 +88,17 @@ const SignUpPage = () => {
 
     if (isUserExists) {
       setAlert(<Alert  message="User already exists! Please choose a different username." type="error"/>);
+      showAlert()
       return;
     }
     if (!isStrongPassword(user.password)){
       setAlert(<Alert  message="You must choose a strong password." type="error"/>);
+      showAlert()
       return;
     }
     if (user.password !== user.confirmPassword){
       setAlert(<Alert  message="Please make sure that the confirmed password matches the written password." type="warning"/>);
+      showAlert()
       return;
     }
 

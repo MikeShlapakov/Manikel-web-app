@@ -50,8 +50,9 @@ const Post = ({ token, post, setPostsList, setEditPost, setShowCommentsModal, se
   const [liked, setLiked] = useState(false);
 
   const handleEditPost = () => {
+    console.log()
+    // setEditPost(<EditPostModal message="Posting has been denied, this post contains a banned URL" type="error"/>);
     setEditPost(post)
-    // setEditPostId(post)
   };
 
   const handleDeletePost = async () => {

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {getLoggedInUser, logout, isLoggedIn, getUserByID} from '../../Authentication';
 import Post from '../../posts/Post';
-// import posts from '../../data/posts.json';
+import Alert from "../../alerts/Alert";
 import Comments from '../../posts/Comments';
 
 function FeedPage({token}) {
@@ -15,6 +15,16 @@ function FeedPage({token}) {
   const theme = "true" === queryParams.get('theme');
 
   // console.log("FEED:", token, userId)
+  const [alert, setAlert] = useState(null); // State to control alert
+
+  const showAlert = () => {
+    const modalElement = document.getElementById('alertModal');
+    if (!modalElement) return; // Check if modal element exists
+
+    const bootstrapModal = new window.bootstrap.Modal(modalElement);
+    bootstrapModal.show();
+  };
+
 
   const [user, setUser] = useState([]);
 
@@ -80,10 +90,6 @@ function FeedPage({token}) {
 
 
   const [darkTheme, setDarkTheme] = useState(theme.boo);
-
-  // useEffect(() => {
-  //   setDarkTheme()
-  // }, []);
 
   const [editPost, setEditPost] = useState(null);
 
@@ -161,8 +167,10 @@ function FeedPage({token}) {
   const checkEmptyPost = () => {
     if(addPost.content === '' ||
       addPost.picture === null){
+        setAlert(<Alert message="Posting has been denied, can't post empty content or picture" type="error"/>);
+        showAlert();
         return true;
-      }
+    }
     return false;
   };
 
@@ -173,11 +181,16 @@ function FeedPage({token}) {
     }
 
     const newPost = await createPost()
-
+    if (newPost.errors){
+      console.log(newPost.errors)
+      setAlert(<Alert message="Posting has been denied, this post contains a banned URL" type="error"/>);
+      showAlert();
+    }
     // console.log(newPost)
     
     // console.log(posts)
     setNewPost({content: '', picture: null})
+
     setPostsList(await getAllPosts());
 
   };
@@ -197,7 +210,8 @@ function FeedPage({token}) {
             authorPfp: user.pfp,
             authorDisplayName: user.displayName,
         })
-    })
+    }).then(response => {
+      return response.json();})
     return post
 }
 
@@ -207,7 +221,12 @@ function FeedPage({token}) {
       return;
     }
 
-    await edit();
+    const newPost = await edit()
+    if (newPost.errors){
+      console.log(newPost.errors)
+      setAlert(<Alert message="Posting has been denied, this post contains a banned URL" type="error"/>);
+      showAlert();
+    }
 
     setPostsList(await getAllPosts());
 
@@ -226,7 +245,9 @@ function FeedPage({token}) {
           content: addPost.content,
           image: addPost.picture
         })
-    }).then(data => data.json());
+    }).then(response => {
+      return response.json();})
+    return posts;
   }
 
   const backToLogin = () => {
@@ -326,7 +347,7 @@ function FeedPage({token}) {
               <ul className="navbar-nav ml-auto">
                 <li className="nav-item me-2">
                   <button title="add post" className={`btn btn-outline-${darkTheme ? "light" : "dark"} ml-2`} data-bs-toggle="modal" data-bs-target="#addPost">
-                      Add post
+                    Add post
                   </button>
                 </li>
                 <li className="nav-item me-2">
@@ -426,7 +447,6 @@ function FeedPage({token}) {
         </div>
       </div>
 
-
       <div className="modal fade" id="addPost" aria-hidden="true">
         <div className="modal-dialog">
           <div className="modal-content">
@@ -453,7 +473,7 @@ function FeedPage({token}) {
           </div>
         </div>
       </div>
-
+      
       <div className={`modal ${editPost ? 'fade show' : 'fade'}`} style={{ display: editPost ? 'block' : 'none' }}>
         <div className="modal-dialog">
           <div className="modal-content">
@@ -480,6 +500,8 @@ function FeedPage({token}) {
           </div>
         </div>
       </div>
+
+      {alert}
 
       <Comments
         show={showCommentsModal}

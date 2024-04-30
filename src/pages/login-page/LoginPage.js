@@ -12,6 +12,18 @@ function LoginPage({token, setToken, setUserId}) {
 
   const [alert, setAlert] = useState(null); // State to control alert
 
+  const showAlert = () => {
+    const modalElement = document.getElementById('alertModal');
+    if (!modalElement) return; // Check if modal element exists
+
+    const bootstrapModal = new window.bootstrap.Modal(modalElement);
+    bootstrapModal.show();
+  };
+
+  const handleCloseAlert = () => {
+    // setAlert(null);
+  };
+
   const [user, setUser] = useState({
     username: '',
     password: '',
@@ -30,7 +42,8 @@ function LoginPage({token, setToken, setUserId}) {
 
     // Handle failed login, such as displaying an error message
     if (user.username === '' || user.password === ''){
-      setAlert(<Alert  message="Please fill out all fields." type="warning"/>);
+      setAlert(<Alert message="Please fill out all fields." type="warning"/>);
+      showAlert();
       return;
     }
 
@@ -40,13 +53,15 @@ function LoginPage({token, setToken, setUserId}) {
 
     // Check if the new user already exists
     if (!isAuthenticated){
-      setAlert(<Alert  message="User not found! Please check username and password." type="error"/>);
+      setAlert(<Alert message="User not found! Please check username and password." type="error" onClose={handleCloseAlert}/>);
+      showAlert();
       return;
     }
     
     const u = await getUserByUsername(user.username);
     if (!u) {
-      setAlert(<Alert  message="User not found! Please check username and password." type="error"/>);
+      setAlert(<Alert message="User not found! Please check username and password." type="error" onClose={handleCloseAlert}/>);
+      showAlert();
       return;
     }
 
@@ -66,36 +81,36 @@ function LoginPage({token, setToken, setUserId}) {
 
   return (
     <div className="container mt-5">
-    <div className="row justify-content-center">
-      <div className="col-md-6">
-        <div className="card">
-          <div className="card-header">
-            <h2 className="text-primary text-center">Fakebook</h2>
-            </div>
-            <div className="card-body">
-            <div className="d-grid mb-3">
-              <label className="text-center">Login</label>
-            </div>
-            <form onSubmit={handleSubmit}>
-              <div className="d-grid gap-2 col-10 mx-auto mb-3">
-                <input type="text" className="form-control" id="username" title="username" onChange={handleChange} required placeholder="Username" />
+      {alert} 
+      <div className="row justify-content-center">
+        <div className="col-md-6">
+          <div className="card">
+            <div className="card-header">
+              <h2 className="text-primary text-center">Fakebook</h2>
               </div>
-              <div className="d-grid gap-2 col-10 mx-auto mb-3">
-                <input type="password" className="form-control" id="password" title="password" onChange={handleChange} required placeholder="Password" />
+              <div className="card-body">
+              <div className="d-grid mb-3">
+                <label className="text-center">Login</label>
               </div>
-              <div className="d-grid gap-2 col-7 mx-auto mb-3">
-                <button type="submit" className="btn btn-primary" title="Login-btn">Login</button>
-              </div>
-              {alert} 
-              <div className="mt-3 text-center">
-                <p>Don't have an account? <Link to="/signup">Sign Up</Link></p>
+              <form onSubmit={handleSubmit}>
+                <div className="d-grid gap-2 col-10 mx-auto mb-3">
+                  <input type="text" className="form-control" id="username" title="username" onChange={handleChange} required placeholder="Username" />
+                </div>
+                <div className="d-grid gap-2 col-10 mx-auto mb-3">
+                  <input type="password" className="form-control" id="password" title="password" onChange={handleChange} required placeholder="Password" />
+                </div>
+                <div className="d-grid gap-2 col-7 mx-auto mb-3">
+                  <button type="submit" className="btn btn-primary" title="Login-btn">Login</button>
+                </div>
+                <div className="mt-3 text-center">
+                  <p>Don't have an account? <Link to="/signup">Sign Up</Link></p>
+                </div>
+              </form>
             </div>
-            </form>
           </div>
         </div>
       </div>
     </div>
-  </div>
   );
 }
 
